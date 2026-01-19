@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   Building2,
   MessageCircle,
+  Globe,
 } from 'lucide-react';
 import Image from 'next/image';
 import Calculator from './components/Calculator';
@@ -61,6 +62,8 @@ const extraServices = [
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  // Состояние языка: по умолчанию 'ky' (кыргызский)
+  const [lang, setLang] = useState<'ky' | 'ru'>('ky');
 
   const navLinks = [
     { name: 'О нас', href: '#about' },
@@ -69,11 +72,19 @@ const Header = () => {
     { name: 'Контакты', href: '#contacts' },
   ];
 
+  // Функция переключения языка
+  const toggleLanguage = () => {
+    const nextLang = lang === 'ky' ? 'ru' : 'ky';
+    setLang(nextLang);
+    // Сюда потом добавишь логику i18n, например: i18n.changeLanguage(nextLang)
+    console.log(`Language switched to: ${nextLang}`);
+  };
+
   return (
     <header className='fixed top-0 left-0 w-full bg-white/95 backdrop-blur-sm shadow-sm z-50 transition-all'>
       <div className='container mx-auto px-4 py-3 flex items-center justify-between'>
+        {/* Логотип */}
         <Link href='/' className='flex items-center gap-3 group'>
-          {/* <Logo /> */}
           <Image src={'/logo.svg'} width={50} height={50} alt={'logo'} />
           <div className='flex flex-col'>
             <span className='text-xl md:text-2xl font-bold text-primary leading-none group-hover:text-secondary transition-colors'>
@@ -85,6 +96,7 @@ const Header = () => {
           </div>
         </Link>
 
+        {/* Десктопное меню */}
         <nav className='hidden md:flex items-center gap-8'>
           {navLinks.map((link) => (
             <Link
@@ -95,6 +107,16 @@ const Header = () => {
               {link.name}
             </Link>
           ))}
+
+          {/* Кнопка смены языка (Desktop) */}
+          <button
+            onClick={toggleLanguage}
+            className='flex items-center gap-1.5 font-bold text-gray-600 hover:text-primary transition-colors border-2 border-transparent hover:border-gray-100 rounded-lg px-2 py-1'
+          >
+            <Globe size={20} />
+            <span className='uppercase'>{lang === 'ky' ? 'KG' : 'RU'}</span>
+          </button>
+
           <a
             href='https://wa.me/996555000000' // ЗАМЕНИТЬ НОМЕР
             className='bg-primary hover:bg-green-700 text-white px-5 py-2.5 rounded-full font-bold transition duration-300 shadow-lg shadow-primary/20 flex items-center gap-2 transform hover:-translate-y-0.5'
@@ -104,16 +126,28 @@ const Header = () => {
           </a>
         </nav>
 
-        {/* Mobile Menu Button */}
-        <button
-          className='md:hidden text-primary p-2'
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X size={32} /> : <Menu size={32} />}
-        </button>
+        {/* Кнопка мобильного меню и Язык (Mobile) */}
+        <div className='flex items-center gap-4 md:hidden'>
+          {/* Язык для мобилки (вынес сюда, чтобы был доступен до открытия меню, но можно убрать внутрь isOpen) */}
+          <button
+            onClick={toggleLanguage}
+            className='flex items-center gap-1 font-bold text-primary border border-primary/20 rounded-lg px-2 py-1'
+          >
+            <span className='uppercase text-sm'>
+              {lang === 'ky' ? 'KG' : 'RU'}
+            </span>
+          </button>
+
+          <button
+            className='text-primary p-2'
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <X size={32} /> : <Menu size={32} />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Выпадающее мобильное меню */}
       {isOpen && (
         <div className='md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 h-screen pb-24 overflow-y-auto z-40'>
           <div className='flex flex-col p-6 gap-6'>
@@ -127,6 +161,7 @@ const Header = () => {
                 {link.name}
               </Link>
             ))}
+
             <a
               href='https://wa.me/996555000000' // ЗАМЕНИТЬ НОМЕР
               className='bg-primary text-white py-4 rounded-xl text-center font-bold flex justify-center items-center gap-2 mt-4'
