@@ -16,6 +16,7 @@ import {
   Building2,
   MessageCircle,
 } from 'lucide-react';
+import Image from 'next/image';
 
 const services = [
   {
@@ -55,29 +56,6 @@ const extraServices = [
   'Химчистка мягкой мебели',
 ];
 
-const Logo = ({ className = '' }: { className?: string }) => (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    viewBox='0 0 500 500'
-    className={`w-12 h-12 md:w-16 md:h-16 ${className}`}
-    fill='none'
-  >
-    <circle
-      cx='250'
-      cy='250'
-      r='235'
-      stroke='currentColor'
-      strokeWidth='20'
-      className='text-primary'
-    />
-    <path
-      d='M242.6 310.1c-9.7-31-24.1-75.5-65.6-83.8 0 0 4-20.2-8.4-26.9 0 0 5.9-21.3 29.7-13 0 0 2.1-15.7 44.9-22.6 0 0-12.5 16.6-13.9 19.6-1.4 3.1-46.1 11.3-26 36.9 0 0-32.4 2.4-38.4 25.3 0 0 5.2 10.5 23.6 8.5 18.4-2 52.4-19.6 62.5-10.5 10.1 9.2 38.1 66.7 66.7 57.8 28.6-8.9 35.7-37.8 35.7-37.8l-1.5-33s10.4-7.4 20.2-2.1v-6.5h-27.4c0 2.1-2.7 4.5-2.7 4.5s-2.7 46.4-18.7 46.4c-16 0-22.9-20.8-31.5-26.5-8.6-5.6-45.2 5.6-45.2 5.6s-5.3-11.6-5.3-18.1c0-6.5 8-15.4 14.9-13.1s6.2 8.9 6.2 8.9 14.9 7.7 28.5 0c13.7-7.7 13.4-28.5 2.1-41-11.3-12.5-36.9-10.1-36.9-10.1s7.1-13.4 23.5-12.8c16.3.6 22.6 14.6 22.6 14.6s28.5 4.5 46.1-5.3c0 0-9.2 17.5-37.2 21.4 0 0 8.3 11.6 23.8 12.2 15.4.6 36.3-12.2 36.3-12.2s-16.7 27.1-46.4 24.7c0 0 12.8 12.5 12.2 22-4.3 2.6-2.1 17-20.6 10.3-18.6-6.7 6.2-19.2 6.2-19.2s10.1 4.2 19-1.2l-10.4-16-10.1 3c0 0-10.7 41-17.8 53.2s-35.1 15.7-35.1 15.7 13.4-49.7-33.3-58.3l-53.5 32.1c0 0-20.2 24.7-4.2 35.7 0 0-16-2.1-23.2 12.5l7.7 8.6c0 0 5.6-14.3 17-10.7 0 0-9.2 12.5 1.2 25.6l-11.3 10.7c0 0-15.5-31.8 3.5-48.5 19-16.7 49.4-38.4 49.4-38.4s31.5 35.1 49.1 51.7c17.5 16.6 49.7 10.7 49.7 10.7 38.7-24.4 107.7-25 107.7-25s-3.9 25-58.6 29.4c-54.7 4.5-117.2 33.3-136.2 50.3l13.1 2s10.4-13.7 113.6-51.4Z'
-      className='text-secondary'
-      fill='currentColor'
-    />
-  </svg>
-);
-
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -92,13 +70,14 @@ const Header = () => {
     <header className='fixed top-0 left-0 w-full bg-white/95 backdrop-blur-sm shadow-sm z-50 transition-all'>
       <div className='container mx-auto px-4 py-3 flex items-center justify-between'>
         <Link href='/' className='flex items-center gap-3 group'>
-          <Logo />
+          {/* <Logo /> */}
+          <Image src={'/logo.svg'} width={50} height={50} alt={'logo'} />
           <div className='flex flex-col'>
             <span className='text-xl md:text-2xl font-bold text-primary leading-none group-hover:text-secondary transition-colors'>
               Таза Айым
             </span>
-            <span className='text-xs md:text-sm tracking-[0.3em] text-secondary font-bold'>
-              КЛИНИНГ
+            <span className='text-xs md:text-sm text-secondary font-bold uppercase'>
+              КЛИНИНГовая компания
             </span>
           </div>
         </Link>
@@ -168,7 +147,7 @@ const Footer = () => (
         <div>
           <div className='flex items-center gap-3 mb-6'>
             <div className='bg-white p-1 rounded-full'>
-              <Logo className='w-10 h-10' />
+              <Image src={'/logo.svg'} width={50} height={50} alt={'logo'} />
             </div>
             <span className='text-2xl font-bold'>Таза Айым</span>
           </div>
@@ -257,15 +236,15 @@ export default function Home() {
   const whatsappLink = 'https://wa.me/996555000000'; // ЗАМЕНИТЬ НОМЕР
 
   return (
-    <main className='min-h-screen pt-[74px]'>
+    <main className='min-h-screen pt-18.5'>
       {' '}
       {/* Отступ для фиксированного хедера */}
       <Header />
       {/* Hero Section (Первый экран) */}
-      <section className='relative bg-light min-h-[600px] flex items-center justify-center overflow-hidden'>
+      <section className='relative bg-light min-h-150 flex items-center justify-center overflow-hidden'>
         {/* Фоновое изображение */}
         <div className='absolute inset-0 z-0'>
-          <div className='absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10'></div>
+          <div className='absolute inset-0 bg-linear-to-r from-white via-white/80 to-transparent z-10'></div>
           {/* Используем обычный img для простоты, в продакшене лучше next/image */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -344,7 +323,7 @@ export default function Home() {
                 <h4 className='text-xl font-extrabold text-primary mb-3 group-hover:text-secondary transition-colors uppercase'>
                   {service.title}
                 </h4>
-                <p className='text-gray-600 text-sm mb-8 flex-grow leading-relaxed'>
+                <p className='text-gray-600 text-sm mb-8 grow leading-relaxed'>
                   {service.desc}
                 </p>
                 <a
@@ -361,7 +340,7 @@ export default function Home() {
       {/* Дополнительные услуги */}
       <section className='py-20 bg-white'>
         <div className='container mx-auto px-4'>
-          <div className='bg-primary rounded-[2rem] p-8 md:p-16 text-white relative overflow-hidden shadow-2xl'>
+          <div className='bg-primary rounded-4xl p-8 md:p-16 text-white relative overflow-hidden shadow-2xl'>
             {/* Декоративный круг */}
             <div className='absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-3xl'></div>
 
@@ -455,7 +434,7 @@ export default function Home() {
         href={whatsappLink}
         target='_blank'
         rel='noopener noreferrer'
-        className='fixed bottom-6 right-6 z-[60] bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform animate-bounce hover:animate-none flex items-center justify-center'
+        className='fixed bottom-6 right-6 z-60 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform animate-bounce hover:animate-none flex items-center justify-center'
         aria-label='Чат в WhatsApp'
       >
         <MessageCircle size={32} fill='white' className='text-white' />

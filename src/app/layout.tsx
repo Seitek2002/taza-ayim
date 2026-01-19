@@ -12,6 +12,9 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: 'Таза Айым - Клининговая компания',
   description: 'Профессиональная уборка в Бишкеке',
+  icons: {
+    icon: '/logo.svg',
+  }
 };
 
 export default function RootLayout({
