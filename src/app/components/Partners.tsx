@@ -1,6 +1,9 @@
 'use client';
 
 import Image from 'next/image';
+import { useMemo } from 'react';
+import { useCurrentLang } from '../i18n/useLang';
+import { dictionaries } from '../i18n/dictionaries';
 
 const partners = [
   {
@@ -19,7 +22,7 @@ const partners = [
     name: 'Алтын Булак',
     logo: '/partners/алтын-булак-пансионат.jpg',
     // Вставьте сюда ссылку на Instagram или сайт пансионата
-    link: ',https://www.instagram.com/altyn.bulak.kg?igsh=aHYxeDFnMm53Z3Zu',
+    link: 'https://www.instagram.com/altyn.bulak.kg?igsh=aHYxeDFnMm53Z3Zu',
   },
   {
     name: 'Монарх Чайхана',
@@ -36,18 +39,19 @@ const partners = [
 ];
 
 const Partners = () => {
+  const lang = useCurrentLang();
+  const t = useMemo(() => dictionaries[lang], [lang]);
   return (
     <section className='py-20 bg-white border-t border-gray-100'>
       <div className='container mx-auto px-4'>
         {/* Заголовок */}
         <div className='text-center mb-16'>
           <h2 className='text-3xl md:text-4xl font-bold text-gray-800 mb-4'>
-            Нам доверяют
+            {t.partners.heading}
           </h2>
           <div className='w-20 h-1.5 bg-primary mx-auto rounded-full mb-6'></div>
           <p className='text-gray-500 max-w-2xl mx-auto text-lg'>
-            Мы гордимся сотрудничеством с ведущими компаниями, ресторанами и
-            пансионатами Кыргызстана.
+            {t.partners.text}
           </p>
         </div>
 
@@ -86,7 +90,7 @@ const Partners = () => {
             href='https://wa.me/996555000000' // ЗАМЕНИТЬ НА НОМЕР КЛИЕНТКИ
             className='inline-flex items-center gap-2 text-primary font-bold hover:text-secondary transition-colors border-b-2 border-primary/20 hover:border-secondary pb-1'
           >
-            Стать нашим партнером
+            {t.partners.cta}
             <svg
               xmlns='http://www.w3.org/2000/svg'
               fill='none'

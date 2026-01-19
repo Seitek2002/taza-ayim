@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   Menu,
@@ -21,6 +21,8 @@ import Image from 'next/image';
 import Calculator from './components/Calculator';
 import PortfolioGallery from './components/PortfolioGallery';
 import Partners from './components/Partners';
+import { dictionaries, type Lang } from './i18n/dictionaries';
+import { useCurrentLang } from './i18n/useLang';
 
 const services = [
   {
@@ -49,35 +51,47 @@ const services = [
   },
 ];
 
-const extraServices = [
-  'Влажная уборка',
-  'Уборка после ремонта',
-  'Уборка после ЧП',
-  'Мойка окон',
-  'Мойка фасадов',
-  'Высотные работы',
-  'Химчистка ковров',
-  'Химчистка мягкой мебели',
-];
+// Список дополнительных услуг берём из словаря (t.extra.items)
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  // Состояние языка: по умолчанию 'ky' (кыргызский)
-  const [lang, setLang] = useState<'ky' | 'ru'>('ky');
+  // Инициализация языка из localStorage, по умолчанию 'ky'
+  const [lang, setLang] = useState<Lang>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('lang') as Lang | null;
+      if (saved === 'ru' || saved === 'ky') return saved;
+    }
+    return 'ky';
+  });
+
+  // Поддерживаем атрибут <html lang="..."> актуальным
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = lang;
+    }
+  }, [lang]);
+
+  // Словарь текущего языка мемоизируем
+  const t = useMemo(() => dictionaries[lang], [lang]);
 
   const navLinks = [
-    { name: 'О нас', href: '#about' },
-    { name: 'Услуги', href: '#services' },
-    { name: 'Преимущества', href: '#advantages' },
-    { name: 'Контакты', href: '#contacts' },
+    { name: t.nav.about, href: '#about' },
+    { name: t.nav.services, href: '#services' },
+    { name: t.nav.advantages, href: '#advantages' },
+    { name: t.nav.contacts, href: '#contacts' },
   ];
 
-  // Функция переключения языка
+  // Функция переключения языка с сохранением
   const toggleLanguage = () => {
-    const nextLang = lang === 'ky' ? 'ru' : 'ky';
+    const nextLang: Lang = lang === 'ky' ? 'ru' : 'ky';
     setLang(nextLang);
-    // Сюда потом добавишь логику i18n, например: i18n.changeLanguage(nextLang)
-    console.log(`Language switched to: ${nextLang}`);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lang', nextLang);
+      // уведомим остальные компоненты, чтобы обновились в этой же вкладке
+      window.dispatchEvent(
+        new CustomEvent('lang-changed', { detail: nextLang }),
+      );
+    }
   };
 
   return (
@@ -91,7 +105,7 @@ const Header = () => {
               Таза Айым
             </span>
             <span className='text-xs md:text-sm text-secondary font-bold uppercase'>
-              КЛИНИНГовая компания
+              {t.brand.subtitle}
             </span>
           </div>
         </Link>
@@ -122,7 +136,7 @@ const Header = () => {
             className='bg-primary hover:bg-green-700 text-white px-5 py-2.5 rounded-full font-bold transition duration-300 shadow-lg shadow-primary/20 flex items-center gap-2 transform hover:-translate-y-0.5'
           >
             <Phone size={18} />
-            <span>Связаться</span>
+            <span>{t.header.contact}</span>
           </a>
         </nav>
 
@@ -167,7 +181,7 @@ const Header = () => {
               className='bg-primary text-white py-4 rounded-xl text-center font-bold flex justify-center items-center gap-2 mt-4'
             >
               <Phone size={20} />
-              Написать в WhatsApp
+              {t.header.whatsapp}
             </a>
           </div>
         </div>
@@ -177,101 +191,106 @@ const Header = () => {
 };
 
 // 3. Подвал (Footer)
-const Footer = () => (
-  <footer id='contacts' className='bg-primary text-white pt-16 pb-8'>
-    <div className='container mx-auto px-4'>
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-12 mb-12'>
-        {/* Инфо */}
-        <div>
-          <div className='flex items-center gap-3 mb-6'>
-            <div className='bg-white p-1 rounded-full'>
-              <Image src={'/logo.svg'} width={50} height={50} alt={'logo'} />
+const Footer = () => {
+  const lang = useCurrentLang();
+  const t = useMemo(() => dictionaries[lang], [lang]);
+  return (
+    <footer id='contacts' className='bg-primary text-white pt-16 pb-8'>
+      <div className='container mx-auto px-4'>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-12 mb-12'>
+          {/* Инфо */}
+          <div>
+            <div className='flex items-center gap-3 mb-6'>
+              <div className='bg-white p-1 rounded-full'>
+                <Image src={'/logo.svg'} width={50} height={50} alt={'logo'} />
+              </div>
+              <span className='text-2xl font-bold'>Таза Айым</span>
             </div>
-            <span className='text-2xl font-bold'>Таза Айым</span>
+            <p className='text-white/80 mb-6 leading-relaxed'>
+              {t.footer.aboutText}
+            </p>
           </div>
-          <p className='text-white/80 mb-6 leading-relaxed'>
-            Профессиональные клининговые услуги на рынке Кыргызстана. Создаем
-            чистоту во всем для вашего бизнеса и дома.
+
+          {/* Контакты */}
+          <div>
+            <h3 className='text-xl font-bold mb-6 border-b border-white/20 pb-2 inline-block'>
+              {t.footer.contacts}
+            </h3>
+            <ul className='space-y-4'>
+              <li className='flex items-center gap-3'>
+                <Phone className='text-secondary' />
+                <a
+                  href='tel:+996555000000'
+                  className='hover:text-secondary transition'
+                >
+                  +996 555 00 00 00
+                </a>
+              </li>
+              <li className='flex items-center gap-3'>
+                <MapPin className='text-secondary' />
+                <span>{t.footer.address}</span>
+              </li>
+              <li className='flex items-center gap-3'>
+                <Instagram className='text-secondary' />
+                <a
+                  href='https://www.instagram.com/taza_aiym'
+                  target='_blank'
+                  className='hover:text-secondary transition'
+                >
+                  @taza_aiym
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Навигация */}
+          <div>
+            <h3 className='text-xl font-bold mb-6 border-b border-white/20 pb-2 inline-block'>
+              {t.footer.menu}
+            </h3>
+            <ul className='space-y-2'>
+              <li>
+                <Link href='#about' className='hover:text-secondary transition'>
+                  {t.nav.about}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href='#services'
+                  className='hover:text-secondary transition'
+                >
+                  {t.nav.services}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href='#advantages'
+                  className='hover:text-secondary transition'
+                >
+                  {t.nav.advantages}
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className='border-t border-white/10 pt-8 text-center text-sm text-white/60'>
+          <p>
+            &copy; {new Date().getFullYear()} Таза Айым Клининг.{' '}
+            {t.footer.rights}
           </p>
         </div>
-
-        {/* Контакты */}
-        <div>
-          <h3 className='text-xl font-bold mb-6 border-b border-white/20 pb-2 inline-block'>
-            Контакты
-          </h3>
-          <ul className='space-y-4'>
-            <li className='flex items-center gap-3'>
-              <Phone className='text-secondary' />
-              <a
-                href='tel:+996555000000'
-                className='hover:text-secondary transition'
-              >
-                +996 555 00 00 00
-              </a>
-            </li>
-            <li className='flex items-center gap-3'>
-              <MapPin className='text-secondary' />
-              <span>г. Бишкек, Кыргызстан</span>
-            </li>
-            <li className='flex items-center gap-3'>
-              <Instagram className='text-secondary' />
-              <a
-                href='https://www.instagram.com/taza_aiym'
-                target='_blank'
-                className='hover:text-secondary transition'
-              >
-                @taza_aiym
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        {/* Навигация */}
-        <div>
-          <h3 className='text-xl font-bold mb-6 border-b border-white/20 pb-2 inline-block'>
-            Меню
-          </h3>
-          <ul className='space-y-2'>
-            <li>
-              <Link href='#about' className='hover:text-secondary transition'>
-                О компании
-              </Link>
-            </li>
-            <li>
-              <Link
-                href='#services'
-                className='hover:text-secondary transition'
-              >
-                Услуги
-              </Link>
-            </li>
-            <li>
-              <Link
-                href='#advantages'
-                className='hover:text-secondary transition'
-              >
-                Преимущества
-              </Link>
-            </li>
-          </ul>
-        </div>
       </div>
-
-      <div className='border-t border-white/10 pt-8 text-center text-sm text-white/60'>
-        <p>
-          &copy; {new Date().getFullYear()} Таза Айым Клининг. Все права
-          защищены.
-        </p>
-      </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 // --- ГЛАВНАЯ СТРАНИЦА (Сборка) ---
 
 export default function Home() {
   const whatsappLink = 'https://wa.me/996555000000';
+  const lang = useCurrentLang();
+  const t = useMemo(() => dictionaries[lang], [lang]);
 
   return (
     <main className='min-h-screen pt-18.5'>
@@ -295,28 +314,27 @@ export default function Home() {
         <div className='container mx-auto px-4 relative z-20'>
           <div className='max-w-2xl'>
             <div className='inline-block py-1 px-4 rounded-full bg-secondary/10 text-secondary font-bold text-sm mb-6 border border-secondary/20'>
-              БИШКЕК И ЧУЙСКАЯ ОБЛАСТЬ
+              {t.hero.region}
             </div>
             <h1 className='text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-6 leading-[1.15]'>
-              НАША ЦЕЛЬ — <br /> СОЗДАТЬ ЧИСТОТУ <br /> ВО ВСЕМ
+              {t.hero.title}
             </h1>
             <p className='text-lg md:text-xl text-gray-600 mb-10 border-l-4 border-secondary pl-6 leading-relaxed'>
-              Профессиональные клининговые услуги для бизнеса и частных лиц.
-              Собственное оборудование и гарантия качества.
+              {t.hero.desc}
             </p>
             <div className='flex flex-col sm:flex-row gap-4'>
               <a
                 href={whatsappLink}
                 className='bg-primary hover:bg-green-700 text-white font-bold py-4 px-8 rounded-full transition shadow-xl shadow-primary/30 flex items-center justify-center gap-2 transform hover:-translate-y-1'
               >
-                <span>Рассчитать стоимость</span>
+                <span>{t.hero.ctaCalculate}</span>
                 <ArrowRight size={20} />
               </a>
               <Link
                 href='#services'
                 className='bg-white hover:bg-gray-50 text-primary border-2 border-primary font-bold py-4 px-8 rounded-full transition flex items-center justify-center'
               >
-                Смотреть услуги
+                {t.hero.ctaViewServices}
               </Link>
             </div>
           </div>
@@ -326,12 +344,10 @@ export default function Home() {
       <section id='about' className='py-20 bg-white text-center'>
         <div className='container mx-auto px-4 max-w-4xl'>
           <h2 className='text-3xl font-bold text-gray-800 mb-6'>
-            УСЛУГИ ДЛЯ БИЗНЕСА
+            {t.about.heading}
           </h2>
           <p className='text-xl text-gray-600 leading-relaxed'>
-            Мы предоставляем профессиональные и качественные услуги клининга для
-            компаний. Работаем с офисами, торговыми центрами, складами и жилыми
-            комплексами, обеспечивая безупречную чистоту.
+            {t.about.desc}
           </p>
         </div>
       </section>
@@ -344,10 +360,10 @@ export default function Home() {
         <div className='container mx-auto px-4'>
           <div className='text-center mb-16'>
             <h2 className='text-primary font-bold tracking-widest uppercase mb-2'>
-              Наши пакеты
+              {t.services.sectionTag}
             </h2>
             <h3 className='text-3xl md:text-4xl font-bold text-gray-900'>
-              Выберите вид уборки
+              {t.services.sectionTitle}
             </h3>
           </div>
 
@@ -372,7 +388,7 @@ export default function Home() {
                   href={whatsappLink}
                   className='w-full py-3 rounded-xl border-2 border-primary text-primary font-bold text-center hover:bg-primary hover:text-white transition-all mt-auto block'
                 >
-                  Заказать
+                  {t.services.order}
                 </a>
               </div>
             ))}
@@ -389,23 +405,21 @@ export default function Home() {
             <div className='grid md:grid-cols-2 gap-12 relative z-10 items-center'>
               <div>
                 <h3 className='text-3xl md:text-4xl font-bold mb-6'>
-                  Дополнительные услуги
+                  {t.extra.heading}
                 </h3>
                 <p className='text-white/90 text-lg mb-8 leading-relaxed'>
-                  Мы выполняем полный спектр работ по клинингу. От мойки фасадов
-                  до химчистки мягкой мебели. Если вы не нашли нужную услугу,
-                  просто напишите нам.
+                  {t.extra.desc}
                 </p>
                 <a
                   href={whatsappLink}
                   className='inline-flex items-center gap-2 bg-white text-primary font-bold py-4 px-8 rounded-full hover:bg-secondary hover:text-white transition shadow-lg'
                 >
-                  Обсудить задачу
+                  {t.extra.cta}
                 </a>
               </div>
 
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-                {extraServices.map((item, idx) => (
+                {t.extra.items.map((item, idx) => (
                   <div
                     key={idx}
                     className='flex items-center gap-3 bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10 hover:bg-white/20 transition cursor-default'
@@ -426,7 +440,7 @@ export default function Home() {
       <section id='advantages' className='py-20 bg-light'>
         <div className='container mx-auto px-4'>
           <h2 className='text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16'>
-            Почему выбирают нас?
+            {t.advantages.heading}
           </h2>
 
           <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
@@ -435,12 +449,9 @@ export default function Home() {
                 <Truck size={40} />
               </div>
               <h3 className='text-xl font-bold mb-3 text-gray-900'>
-                Собственная автовышка
+                {t.advantages.cards[0].title}
               </h3>
-              <p className='text-gray-600'>
-                Высота 18 метров. Позволяет нам работать автономно и без
-                посредников.
-              </p>
+              <p className='text-gray-600'>{t.advantages.cards[0].desc}</p>
             </div>
 
             <div className='flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-sm hover:shadow-md transition'>
@@ -448,11 +459,9 @@ export default function Home() {
                 <Building2 size={40} />
               </div>
               <h3 className='text-xl font-bold mb-3 text-gray-900'>
-                До 5 этажа
+                {t.advantages.cards[1].title}
               </h3>
-              <p className='text-gray-600'>
-                Эффективно обслуживаем фасады и окна зданий средней этажности.
-              </p>
+              <p className='text-gray-600'>{t.advantages.cards[1].desc}</p>
             </div>
 
             <div className='flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-sm hover:shadow-md transition'>
@@ -460,12 +469,9 @@ export default function Home() {
                 <ShieldCheck size={40} />
               </div>
               <h3 className='text-xl font-bold mb-3 text-gray-900'>
-                Безопасные средства
+                {t.advantages.cards[2].title}
               </h3>
-              <p className='text-gray-600'>
-                Используем профессиональное оборудование и сертифицированную
-                химию.
-              </p>
+              <p className='text-gray-600'>{t.advantages.cards[2].desc}</p>
             </div>
           </div>
         </div>
