@@ -17,6 +17,9 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import Image from 'next/image';
+import Calculator from './components/Calculator';
+import PortfolioGallery from './components/PortfolioGallery';
+import Partners from './components/Partners';
 
 const services = [
   {
@@ -233,7 +236,7 @@ const Footer = () => (
 // --- ГЛАВНАЯ СТРАНИЦА (Сборка) ---
 
 export default function Home() {
-  const whatsappLink = 'https://wa.me/996555000000'; // ЗАМЕНИТЬ НОМЕР
+  const whatsappLink = 'https://wa.me/996555000000';
 
   return (
     <main className='min-h-screen pt-18.5'>
@@ -297,6 +300,10 @@ export default function Home() {
           </p>
         </div>
       </section>
+      <Partners />
+      <PortfolioGallery />
+      <Calculator />
+      {/* <BeforeAfter /> */}
       {/* Карточки услуг */}
       <section id='services' className='py-20 bg-light'>
         <div className='container mx-auto px-4'>
