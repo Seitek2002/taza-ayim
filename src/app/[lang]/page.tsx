@@ -17,7 +17,7 @@ import Calculator from '../components/Calculator';
 import PortfolioGallery from '../components/PortfolioGallery';
 import Partners from '../components/Partners';
 import Header from '../components/Header';
-import { getDictionaryFromExcel } from '@/lib/dictionary-util';
+import { getDictionaryFromApi } from '@/lib/dictionary-api';
 import { Lang } from '../i18n/dictionaries';
 
 type Props = {
@@ -27,7 +27,7 @@ type Props = {
 // 1. Генерация метаданных (SEO)
 export async function generateMetadata({ params }: Props) {
   const { lang } = await params; // Обязательно ждем параметры
-  const t = await getDictionaryFromExcel(lang);
+  const t = await getDictionaryFromApi(lang);
   return {
     title: t.seo.title,
     description: t.seo.description,
@@ -133,7 +133,7 @@ export default async function Home({ params }: Props) {
 
   // Ждем параметры (await) — это исправит ошибку undefined
   const { lang } = await params;
-  const t = await getDictionaryFromExcel(lang);
+  const t = await getDictionaryFromApi(lang);
 
   const services = [
     {
@@ -184,10 +184,10 @@ export default async function Home({ params }: Props) {
             <div className='inline-block py-1 px-4 rounded-full bg-secondary/10 text-secondary font-bold text-sm mb-6 border border-secondary/20'>
               {t.hero.region}
             </div>
-            <h1 className='text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-6 leading-[1.15]'>
+            <h1 className='text-4xl bg-gray-200/40 lg:bg-transparent md:text-5xl lg:text-6xl font-bold text-primary mb-6 leading-[1.15]'>
               {t.hero.title}
             </h1>
-            <p className='text-lg md:text-xl text-gray-600 mb-10 border-l-4 border-secondary pl-6 leading-relaxed'>
+            <p className='text-lg bg-gray-200/40 lg:bg-transparent md:text-xl text-gray-600 mb-10 border-l-4 border-secondary pl-6 leading-relaxed'>
               {t.hero.desc}
             </p>
             <div className='flex flex-col sm:flex-row gap-4'>
@@ -291,18 +291,20 @@ export default async function Home({ params }: Props) {
               </div>
 
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-                {Object.values(t.extra.items).map((item: string, idx: number) => (
-                  <div
-                    key={idx}
-                    className='flex items-center gap-3 bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10 hover:bg-white/20 transition cursor-default'
-                  >
-                    <CheckCircle2
-                      className='text-secondary shrink-0'
-                      size={20}
-                    />
-                    <span className='font-medium'>{item}</span>
-                  </div>
-                ))}
+                {(Object.values(t.extra.items) as string[]).map(
+                  (item: string, idx: number) => (
+                    <div
+                      key={idx}
+                      className='flex items-center gap-3 bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10 hover:bg-white/20 transition cursor-default'
+                    >
+                      <CheckCircle2
+                        className='text-secondary shrink-0'
+                        size={20}
+                      />
+                      <span className='font-medium'>{item}</span>
+                    </div>
+                  ),
+                )}
               </div>
             </div>
           </div>
