@@ -7,24 +7,26 @@ import {
 } from 'react-compare-slider';
 import { CheckCircle2 } from 'lucide-react';
 
-const cases = [
-  {
-    id: 1,
-    title: 'Чистка бассейна',
-    desc: 'Удаление налета, грибка и грязи со дна и стенок.',
-    before: '/dirty-pool.png', // Твое сгенерированное фото
-    after: '/clean-pool.jpg', // Твое оригинальное фото
-  },
-  {
-    id: 2,
-    title: 'Уборка офиса',
-    desc: 'Глубокая чистка ковролина и мебели.',
-    before: '/dirty-office.png', // Пример (замени)
-    after: '/clean-office.png', // Пример (замени)
-  },
-];
+const PortfolioGallery = ({ dict }: { dict: any }) => {
+  // Собираем данные из словаря
+  // Используем ?. (опциональную цепочку) на случай, если ключей пока нет в базе
+  const cases = [
+    {
+      id: 1,
+      title: dict?.portfolio?.cases?.[1]?.title || 'Чистка бассейна',
+      desc: dict?.portfolio?.cases?.[1]?.desc || 'Удаление налета...',
+      before: '/dirty-pool.png',
+      after: '/clean-pool.jpg',
+    },
+    {
+      id: 2,
+      title: dict?.portfolio?.cases?.[2]?.title || 'Уборка офиса',
+      desc: dict?.portfolio?.cases?.[2]?.desc || 'Глубокая чистка...',
+      before: '/dirty-office.png',
+      after: '/clean-office.png',
+    },
+  ];
 
-const PortfolioGallery = () => {
   const [activeCase, setActiveCase] = useState(cases[0]);
 
   return (
@@ -33,14 +35,13 @@ const PortfolioGallery = () => {
         {/* Заголовок */}
         <div className='text-center mb-12'>
           <span className='text-secondary font-bold tracking-widest uppercase text-sm'>
-            Наши работы
+            {dict?.portfolio?.tag || 'Наши работы'}
           </span>
           <h2 className='text-3xl md:text-4xl font-bold text-gray-900 mt-2'>
-            До и После
+            {dict?.portfolio?.title || 'До и После'}
           </h2>
           <p className='text-gray-500 mt-4 max-w-2xl mx-auto'>
-            Выберите пример ниже, чтобы увидеть результат нашей работы. Потяните
-            ползунок.
+            {dict?.portfolio?.desc}
           </p>
         </div>
 
@@ -57,7 +58,7 @@ const PortfolioGallery = () => {
                     : 'border-transparent bg-white/50 hover:bg-white text-gray-500'
                 }`}
               >
-                {/* Мини-превью (квадратик) */}
+                {/* Мини-превью */}
                 <div className='w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-200'>
                   <img
                     src={item.after}
@@ -68,7 +69,11 @@ const PortfolioGallery = () => {
 
                 <div>
                   <h4
-                    className={`font-bold text-lg ${activeCase.id === item.id ? 'text-primary' : 'text-gray-700'}`}
+                    className={`font-bold text-lg ${
+                      activeCase.id === item.id
+                        ? 'text-primary'
+                        : 'text-gray-700'
+                    }`}
                   >
                     {item.title}
                   </h4>
@@ -88,16 +93,21 @@ const PortfolioGallery = () => {
           {/* ПРАВАЯ ЧАСТЬ: Активный Слайдер */}
           <div className='w-full lg:w-2/3 order-1 lg:order-2'>
             <div className='relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-white h-100 md:h-125'>
-              {/* Добавляем key, чтобы React перерисовывал анимацию при смене слайда */}
               <ReactCompareSlider
                 key={activeCase.id}
                 itemOne={
-                  <ReactCompareSliderImage src={activeCase.before} alt='До' />
+                  <ReactCompareSliderImage
+                    src={activeCase.before}
+                    alt={dict?.portfolio?.labelBefore || 'До'}
+                  />
                 }
                 itemTwo={
-                  <ReactCompareSliderImage src={activeCase.after} alt='После' />
+                  <ReactCompareSliderImage
+                    src={activeCase.after}
+                    alt={dict?.portfolio?.labelAfter || 'После'}
+                  />
                 }
-                position={50} // Ползунок всегда по центру при переключении
+                position={50}
                 style={{ width: '100%', height: '100%' }}
                 handle={
                   <div className='w-1 h-full bg-white/80 backdrop-blur-sm relative shadow-[0_0_15px_rgba(0,0,0,0.3)]'>
@@ -123,10 +133,10 @@ const PortfolioGallery = () => {
 
               {/* Лейблы поверх картинки */}
               <div className='absolute top-4 left-4 bg-black/50 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider'>
-                До уборки
+                {dict?.portfolio?.labelBefore || 'До'}
               </div>
               <div className='absolute top-4 right-4 bg-primary/80 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider'>
-                После
+                {dict?.portfolio?.labelAfter || 'После'}
               </div>
             </div>
           </div>

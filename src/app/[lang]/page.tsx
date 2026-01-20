@@ -13,7 +13,6 @@ import {
   MessageCircle,
 } from 'lucide-react';
 
-import Calculator from '../components/Calculator';
 import PortfolioGallery from '../components/PortfolioGallery';
 import Partners from '../components/Partners';
 import Header from '../components/Header';
@@ -224,8 +223,7 @@ export default async function Home({ params }: Props) {
       {/* Партнеры */}
       <Partners dict={t} />
 
-      <PortfolioGallery />
-      <Calculator />
+      <PortfolioGallery dict={t} />
 
       {/* Услуги */}
       <section id='services' className='py-20 bg-light'>

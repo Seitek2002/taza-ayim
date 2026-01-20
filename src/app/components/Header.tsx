@@ -19,6 +19,7 @@ const Header = ({ lang, dict }: HeaderProps) => {
   const navLinks = [
     { name: dict.nav.about, href: '#about' },
     { name: dict.nav.services, href: '#services' },
+    { name: dict.nav.prices || 'Цены', href: `/${lang}/prices` },
     { name: dict.nav.advantages, href: '#advantages' },
     { name: dict.nav.contacts, href: '#contacts' },
   ];
