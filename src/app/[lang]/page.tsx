@@ -1,10 +1,6 @@
-'use client';
-
-import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
-  Menu,
-  X,
   Phone,
   CheckCircle2,
   Clock,
@@ -15,185 +11,30 @@ import {
   ShieldCheck,
   Building2,
   MessageCircle,
-  Globe,
 } from 'lucide-react';
-import Image from 'next/image';
-import Calculator from './components/Calculator';
-import PortfolioGallery from './components/PortfolioGallery';
-import Partners from './components/Partners';
-import { dictionaries, type Lang } from './i18n/dictionaries';
-import { useCurrentLang } from './i18n/useLang';
 
-const services = [
-  {
-    id: 1,
-    title: 'БАЗОВАЯ УБОРКА',
-    time: '1.5-2 часа',
-    desc: 'Утренняя или вечерняя комплексная уборка помещения («до» или «после» прихода сотрудников). Актуальна для небольших офисов.',
-  },
-  {
-    id: 2,
-    title: 'ПОДДЕРЖИВАЮЩАЯ',
-    time: '6-8 часов',
-    desc: 'Специалисты в течение рабочего дня убирают помещение. Идеально для ТЦ, супермаркетов и мест с высокой проходимостью.',
-  },
-  {
-    id: 3,
-    title: 'ГЕНЕРАЛЬНАЯ УБОРКА',
-    time: '12-24 часов',
-    desc: 'Тщательная чистка всех труднодоступных мест. Рекомендуется проводить раз в несколько месяцев для любого помещения.',
-  },
-  {
-    id: 4,
-    title: 'ПОСЛЕСТРОИТЕЛЬНАЯ',
-    time: '12-24 часов',
-    desc: 'Удаление пятен краски, клея, строительных растворов и пыли. Используем спец. оборудование и химию.',
-  },
-];
+import Calculator from '../components/Calculator';
+import PortfolioGallery from '../components/PortfolioGallery';
+import Partners from '../components/Partners';
+import Header from '../components/Header';
+import { dictionaries, Lang } from '../i18n/dictionaries';
 
-// Список дополнительных услуг берём из словаря (t.extra.items)
-
-const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  // Инициализация языка из localStorage, по умолчанию 'ky'
-  const [lang, setLang] = useState<Lang>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('lang') as Lang | null;
-      if (saved === 'ru' || saved === 'ky') return saved;
-    }
-    return 'ky';
-  });
-
-  // Поддерживаем атрибут <html lang="..."> актуальным
-  useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.lang = lang;
-    }
-  }, [lang]);
-
-  // Словарь текущего языка мемоизируем
-  const t = useMemo(() => dictionaries[lang], [lang]);
-
-  const navLinks = [
-    { name: t.nav.about, href: '#about' },
-    { name: t.nav.services, href: '#services' },
-    { name: t.nav.advantages, href: '#advantages' },
-    { name: t.nav.contacts, href: '#contacts' },
-  ];
-
-  // Функция переключения языка с сохранением
-  const toggleLanguage = () => {
-    const nextLang: Lang = lang === 'ky' ? 'ru' : 'ky';
-    setLang(nextLang);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('lang', nextLang);
-      // уведомим остальные компоненты, чтобы обновились в этой же вкладке
-      window.dispatchEvent(
-        new CustomEvent('lang-changed', { detail: nextLang }),
-      );
-    }
-  };
-
-  return (
-    <header className='fixed top-0 left-0 w-full bg-white/95 backdrop-blur-sm shadow-sm z-50 transition-all'>
-      <div className='container mx-auto px-4 py-3 flex items-center justify-between'>
-        {/* Логотип */}
-        <Link href='/' className='flex items-center gap-3 group'>
-          <Image src={'/logo.svg'} width={50} height={50} alt={'logo'} />
-          <div className='flex flex-col'>
-            <span className='text-xl md:text-2xl font-bold text-primary leading-none group-hover:text-secondary transition-colors'>
-              Таза Айым
-            </span>
-            <span className='text-xs md:text-sm text-secondary font-bold uppercase'>
-              {t.brand.subtitle}
-            </span>
-          </div>
-        </Link>
-
-        {/* Десктопное меню */}
-        <nav className='hidden md:flex items-center gap-8'>
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className='text-gray-600 hover:text-primary font-medium transition-colors text-sm uppercase tracking-wide'
-            >
-              {link.name}
-            </Link>
-          ))}
-
-          {/* Кнопка смены языка (Desktop) */}
-          <button
-            onClick={toggleLanguage}
-            className='flex items-center gap-1.5 font-bold text-gray-600 hover:text-primary transition-colors border-2 border-transparent hover:border-gray-100 rounded-lg px-2 py-1'
-          >
-            <Globe size={20} />
-            <span className='uppercase'>{lang === 'ky' ? 'KG' : 'RU'}</span>
-          </button>
-
-          <a
-            href='https://wa.me/996555000000' // ЗАМЕНИТЬ НОМЕР
-            className='bg-primary hover:bg-green-700 text-white px-5 py-2.5 rounded-full font-bold transition duration-300 shadow-lg shadow-primary/20 flex items-center gap-2 transform hover:-translate-y-0.5'
-          >
-            <Phone size={18} />
-            <span>{t.header.contact}</span>
-          </a>
-        </nav>
-
-        {/* Кнопка мобильного меню и Язык (Mobile) */}
-        <div className='flex items-center gap-4 md:hidden'>
-          {/* Язык для мобилки (вынес сюда, чтобы был доступен до открытия меню, но можно убрать внутрь isOpen) */}
-          <button
-            onClick={toggleLanguage}
-            className='flex items-center gap-1 font-bold text-primary border border-primary/20 rounded-lg px-2 py-1'
-          >
-            <span className='uppercase text-sm'>
-              {lang === 'ky' ? 'KG' : 'RU'}
-            </span>
-          </button>
-
-          <button
-            className='text-primary p-2'
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X size={32} /> : <Menu size={32} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Выпадающее мобильное меню */}
-      {isOpen && (
-        <div className='md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 h-screen pb-24 overflow-y-auto z-40'>
-          <div className='flex flex-col p-6 gap-6'>
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className='text-xl font-bold text-gray-800 border-b border-gray-100 pb-4'
-                onClick={() => setIsOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
-
-            <a
-              href='https://wa.me/996555000000' // ЗАМЕНИТЬ НОМЕР
-              className='bg-primary text-white py-4 rounded-xl text-center font-bold flex justify-center items-center gap-2 mt-4'
-            >
-              <Phone size={20} />
-              {t.header.whatsapp}
-            </a>
-          </div>
-        </div>
-      )}
-    </header>
-  );
+type Props = {
+  params: Promise<{ lang: Lang }>;
 };
 
-// 3. Подвал (Footer)
-const Footer = () => {
-  const lang = useCurrentLang();
-  const t = useMemo(() => dictionaries[lang], [lang]);
+// 1. Генерация метаданных (SEO)
+export async function generateMetadata({ params }: Props) {
+  const { lang } = await params; // Обязательно ждем параметры
+  const t = dictionaries[lang];
+  return {
+    title: t.seo.title,
+    description: t.seo.description,
+  };
+}
+
+// 2. Компонент Footer (оставляем здесь как часть серверной страницы)
+const Footer = ({ dict }: { dict: any }) => {
   return (
     <footer id='contacts' className='bg-primary text-white pt-16 pb-8'>
       <div className='container mx-auto px-4'>
@@ -207,14 +48,14 @@ const Footer = () => {
               <span className='text-2xl font-bold'>Таза Айым</span>
             </div>
             <p className='text-white/80 mb-6 leading-relaxed'>
-              {t.footer.aboutText}
+              {dict.footer.aboutText}
             </p>
           </div>
 
           {/* Контакты */}
           <div>
             <h3 className='text-xl font-bold mb-6 border-b border-white/20 pb-2 inline-block'>
-              {t.footer.contacts}
+              {dict.footer.contacts}
             </h3>
             <ul className='space-y-4'>
               <li className='flex items-center gap-3'>
@@ -228,7 +69,7 @@ const Footer = () => {
               </li>
               <li className='flex items-center gap-3'>
                 <MapPin className='text-secondary' />
-                <span>{t.footer.address}</span>
+                <span>{dict.footer.address}</span>
               </li>
               <li className='flex items-center gap-3'>
                 <Instagram className='text-secondary' />
@@ -246,12 +87,12 @@ const Footer = () => {
           {/* Навигация */}
           <div>
             <h3 className='text-xl font-bold mb-6 border-b border-white/20 pb-2 inline-block'>
-              {t.footer.menu}
+              {dict.footer.menu}
             </h3>
             <ul className='space-y-2'>
               <li>
                 <Link href='#about' className='hover:text-secondary transition'>
-                  {t.nav.about}
+                  {dict.nav.about}
                 </Link>
               </li>
               <li>
@@ -259,7 +100,7 @@ const Footer = () => {
                   href='#services'
                   className='hover:text-secondary transition'
                 >
-                  {t.nav.services}
+                  {dict.nav.services}
                 </Link>
               </li>
               <li>
@@ -267,7 +108,7 @@ const Footer = () => {
                   href='#advantages'
                   className='hover:text-secondary transition'
                 >
-                  {t.nav.advantages}
+                  {dict.nav.advantages}
                 </Link>
               </li>
             </ul>
@@ -277,7 +118,7 @@ const Footer = () => {
         <div className='border-t border-white/10 pt-8 text-center text-sm text-white/60'>
           <p>
             &copy; {new Date().getFullYear()} Таза Айым Клининг.{' '}
-            {t.footer.rights}
+            {dict.footer.rights}
           </p>
         </div>
       </div>
@@ -285,25 +126,51 @@ const Footer = () => {
   );
 };
 
-// --- ГЛАВНАЯ СТРАНИЦА (Сборка) ---
-
-export default function Home() {
+// 3. ГЛАВНАЯ СТРАНИЦА (Серверный компонент)
+export default async function Home({ params }: Props) {
   const whatsappLink = 'https://wa.me/996555000000';
-  const lang = useCurrentLang();
-  const t = useMemo(() => dictionaries[lang], [lang]);
+
+  // Ждем параметры (await) — это исправит ошибку undefined
+  const { lang } = await params;
+  const t = dictionaries[lang];
+
+  const services = [
+    {
+      id: 1,
+      title: 'БАЗОВАЯ УБОРКА',
+      time: '1.5-2 часа',
+      desc: 'Утренняя или вечерняя комплексная уборка помещения («до» или «после» прихода сотрудников). Актуальна для небольших офисов.',
+    },
+    {
+      id: 2,
+      title: 'ПОДДЕРЖИВАЮЩАЯ',
+      time: '6-8 часов',
+      desc: 'Специалисты в течение рабочего дня убирают помещение. Идеально для ТЦ, супермаркетов и мест с высокой проходимостью.',
+    },
+    {
+      id: 3,
+      title: 'ГЕНЕРАЛЬНАЯ УБОРКА',
+      time: '12-24 часов',
+      desc: 'Тщательная чистка всех труднодоступных мест. Рекомендуется проводить раз в несколько месяцев для любого помещения.',
+    },
+    {
+      id: 4,
+      title: 'ПОСЛЕСТРОИТЕЛЬНАЯ',
+      time: '12-24 часов',
+      desc: 'Удаление пятен краски, клея, строительных растворов и пыли. Используем спец. оборудование и химию.',
+    },
+  ];
 
   return (
     <main className='min-h-screen pt-18.5'>
-      {' '}
-      {/* Отступ для фиксированного хедера */}
-      <Header />
-      {/* Hero Section (Первый экран) */}
+      {/* Передаем словарь в Header */}
+      <Header lang={lang} dict={t} />
+
+      {/* Hero Section */}
       <section className='relative bg-light min-h-150 flex items-center justify-center overflow-hidden'>
-        {/* Фоновое изображение */}
         <div className='absolute inset-0 z-0'>
-          <div className='absolute inset-0 bg-linear-to-r from-white via-white/80 to-transparent z-10'></div>
-          {/* Используем обычный img для простоты, в продакшене лучше next/image */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <div className='absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10'></div>
+          {/* Используем img, чтобы не мучиться с настройкой доменов в next.config.ts для демо */}
           <img
             src='https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop'
             alt='Чистый офис'
@@ -340,7 +207,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* Кратко о компании */}
+
+      {/* О компании */}
       <section id='about' className='py-20 bg-white text-center'>
         <div className='container mx-auto px-4 max-w-4xl'>
           <h2 className='text-3xl font-bold text-gray-800 mb-6'>
@@ -351,11 +219,14 @@ export default function Home() {
           </p>
         </div>
       </section>
-      <Partners />
+
+      {/* Партнеры */}
+      <Partners dict={t} />
+
       <PortfolioGallery />
       <Calculator />
-      {/* <BeforeAfter /> */}
-      {/* Карточки услуг */}
+
+      {/* Услуги */}
       <section id='services' className='py-20 bg-light'>
         <div className='container mx-auto px-4'>
           <div className='text-center mb-16'>
@@ -395,11 +266,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
       {/* Дополнительные услуги */}
       <section className='py-20 bg-white'>
         <div className='container mx-auto px-4'>
           <div className='bg-primary rounded-4xl p-8 md:p-16 text-white relative overflow-hidden shadow-2xl'>
-            {/* Декоративный круг */}
             <div className='absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-3xl'></div>
 
             <div className='grid md:grid-cols-2 gap-12 relative z-10 items-center'>
@@ -419,7 +290,7 @@ export default function Home() {
               </div>
 
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-                {t.extra.items.map((item, idx) => (
+                {t.extra.items.map((item: string, idx: number) => (
                   <div
                     key={idx}
                     className='flex items-center gap-3 bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10 hover:bg-white/20 transition cursor-default'
@@ -436,6 +307,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
       {/* Преимущества */}
       <section id='advantages' className='py-20 bg-light'>
         <div className='container mx-auto px-4'>
@@ -476,13 +348,15 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <Footer />
-      {/* Плавающая кнопка WhatsApp (всегда видна) */}
+
+      {/* Footer (дубль для передачи пропсов, но лучше использовать тот компонент выше) */}
+      <Footer dict={t} />
+
       <a
         href={whatsappLink}
         target='_blank'
         rel='noopener noreferrer'
-        className='fixed bottom-6 right-6 z-60 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform animate-bounce hover:animate-none flex items-center justify-center'
+        className='fixed bottom-6 right-6 z-[60] bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform animate-bounce hover:animate-none flex items-center justify-center'
         aria-label='Чат в WhatsApp'
       >
         <MessageCircle size={32} fill='white' className='text-white' />

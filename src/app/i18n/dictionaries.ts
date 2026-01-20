@@ -1,3 +1,5 @@
+// app/i18n/dictionaries.ts
+
 export type Lang = 'ru' | 'ky';
 
 export const dictionaries = {
@@ -213,44 +215,3 @@ export const dictionaries = {
 } as const;
 
 export type Dictionary = typeof dictionaries.ru;
-
-// Унифицированный тип SEO для использования вне словаря (строки, а не литералы)
-export type SEO = {
-  title: string;
-  description: string;
-  keywords: readonly string[] | string[];
-  ogTitle?: string;
-  ogDescription?: string;
-  ogImage?: string;
-  twitterTitle?: string;
-  twitterDescription?: string;
-  business?: {
-    name: string;
-    telephone: string;
-    address: string;
-    areaServed: string;
-  };
-};
-
-export function selectSeo(lang: Lang): SEO {
-  const seo = dictionaries[lang].seo as unknown as SEO;
-  return seo;
-}
-
-// Доступ по ключу вида "section.key" с безопасным возвратом исходного ключа, если перевода нет
-export function getDictValue<T extends object>(obj: T, path: string): string {
-  const parts = path.split('.');
-  let cur: unknown = obj;
-  for (const p of parts) {
-    if (
-      cur !== null &&
-      typeof cur === 'object' &&
-      p in (cur as Record<string, unknown>)
-    ) {
-      cur = (cur as Record<string, unknown>)[p];
-    } else {
-      return path; // fallback: вернуть ключ, если нет перевода
-    }
-  }
-  return typeof cur === 'string' ? cur : path;
-}
