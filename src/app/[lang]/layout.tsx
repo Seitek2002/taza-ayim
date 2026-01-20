@@ -11,6 +11,9 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: 'Таза Айым',
   description: 'Клининговая компания',
+  icons: {
+    icon: '/logo.svg',
+  }
 };
 
 export async function generateStaticParams() {
