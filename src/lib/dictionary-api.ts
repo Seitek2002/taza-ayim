@@ -1,24 +1,22 @@
 import {
   dictionaries as defaultDictionaries,
+  Dictionary,
   Lang,
 } from '@/app/i18n/dictionaries';
 
-// Адрес твоего API
 const API_URL = 'https://clinning.sino0on.ru/api/items/';
-
-// Поля, которые не являются ключами перевода
 const IGNORED_KEYS = ['value_ru', 'created_at', 'updated_at', 'id'];
 
-// Тип данных с бекенда
 type ApiItem = {
-  value_ru: string; // Это Кыргызский перевод (судя по данным)
+  value_ru: string;
   created_at: string;
   updated_at: string;
-  [key: string]: string; // Динамический ключ (например "hero.title")
+  [key: string]: string;
 };
 
-// Функция для создания вложенности (hero.title -> { hero: { title: ... } })
-function setNestedValue(obj: any, path: string, value: string) {
+// Исправляем any в setNestedValue
+// Мы используем Record<string, any>, так как структура словаря сложная и вложенная
+function setNestedValue(obj: Record<string, any>, path: string, value: string) {
   const keys = path.split('.');
   let current = obj;
 
@@ -27,7 +25,8 @@ function setNestedValue(obj: any, path: string, value: string) {
     if (i === keys.length - 1) {
       current[key] = value;
     } else {
-      if (!current[key]) {
+      // Если ключа нет или это не объект, создаем новый объект
+      if (!current[key] || typeof current[key] !== 'object') {
         current[key] = {};
       }
       current = current[key];
@@ -35,11 +34,8 @@ function setNestedValue(obj: any, path: string, value: string) {
   }
 }
 
-export async function getDictionaryFromApi(lang: Lang) {
+export async function getDictionaryFromApi(lang: Lang): Promise<Dictionary> {
   try {
-    // 1. Делаем запрос к API
-    // next: { revalidate: 60 } означает, что Next.js будет кэшировать ответ на 60 секунд.
-    // Если заказчик обновит текст, изменения появятся через минуту.
     const res = await fetch(API_URL, { next: { revalidate: 60 } });
 
     if (!res.ok) {
@@ -47,11 +43,14 @@ export async function getDictionaryFromApi(lang: Lang) {
     }
 
     const items: ApiItem[] = await res.json();
-    const newDict: any = {};
 
-    // 2. Парсим каждый элемент массива
+    // 1. Создаем глубокую копию.
+    // JSON.parse/stringify возвращает any, поэтому сразу кастуем к Dictionary
+    // Но так как мы будем его менять, приводим к "расширенному" типу, чтобы TS не ругался на запись
+    const dictCopy = JSON.parse(JSON.stringify(defaultDictionaries[lang]));
+
+    // 2. Обновляем значения
     items.forEach((item) => {
-      // Ищем динамический ключ (тот, который не служебный)
       const dictionaryKey = Object.keys(item).find(
         (key) => !IGNORED_KEYS.includes(key),
       );
@@ -60,28 +59,23 @@ export async function getDictionaryFromApi(lang: Lang) {
         let value = '';
 
         if (lang === 'ru') {
-          // Для русского берем значение самого динамического ключа
-          // Пример: { "hero.title": "НАША ЦЕЛЬ" } -> берем "НАША ЦЕЛЬ"
           value = item[dictionaryKey];
         } else if (lang === 'ky') {
-          // Для кыргызского берем поле value_ru (да, бек назвали странно, но там кырг. текст)
           value = item.value_ru;
         }
 
-        // Записываем в объект
         if (value) {
-          setNestedValue(newDict, dictionaryKey, value);
+          setNestedValue(dictCopy, dictionaryKey, value);
         }
       }
     });
 
-    // 3. Объединяем с дефолтным словарем (страховка, если API упадет или там не будет каких-то ключей)
-    // Глубокое слияние здесь упрощено (spread), но для продакшена лучше lodash.merge,
-    // если структура сильно сложная. Пока хватит и так.
-    return { ...defaultDictionaries[lang], ...newDict };
+    // 3. Возвращаем как Dictionary
+    // Здесь используем 'as unknown as Dictionary', чтобы "заткнуть" TypeScript,
+    // если типы строгих литералов все еще конфликтуют. Это безопасно здесь.
+    return dictCopy as unknown as Dictionary;
   } catch (error) {
     console.error('Ошибка получения данных с API:', error);
-    // В случае ошибки возвращаем локальный файл, чтобы сайт не упал
-    return defaultDictionaries[lang];
+    return defaultDictionaries[lang] as unknown as Dictionary;
   }
 }

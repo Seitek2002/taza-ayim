@@ -212,6 +212,6 @@ export const dictionaries = {
       subtitle: 'КЛИНИНГ компаниясы',
     },
   },
-} as const;
+};
 
 export type Dictionary = typeof dictionaries.ru;
