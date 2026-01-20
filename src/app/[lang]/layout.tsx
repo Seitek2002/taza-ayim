@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import './globals.css'; // Проверь количество '../', чтобы дойти до globals.css
+import './globals.css';
 import { Montserrat } from 'next/font/google';
 
 const montserrat = Montserrat({
@@ -13,20 +13,24 @@ export const metadata: Metadata = {
   description: 'Клининговая компания',
 };
 
-// Генерируем статические параметры для билда
 export async function generateStaticParams() {
   return [{ lang: 'ky' }, { lang: 'ru' }];
 }
 
-export default function RootLayout({
+// 1. Делаем компонент async
+// 2. Тип params меняем на Promise
+export default async function RootLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { lang: string };
+  params: Promise<{ lang: string }>;
 }) {
+  // 3. Ждем параметры перед использованием
+  const { lang } = await params;
+
   return (
-    <html lang={params.lang} className='scroll-smooth'>
+    <html lang={lang} className='scroll-smooth'>
       <body
         className={`${montserrat.variable} font-sans text-gray-800 antialiased`}
       >

@@ -17,7 +17,8 @@ import Calculator from '../components/Calculator';
 import PortfolioGallery from '../components/PortfolioGallery';
 import Partners from '../components/Partners';
 import Header from '../components/Header';
-import { dictionaries, Lang } from '../i18n/dictionaries';
+import { getDictionaryFromExcel } from '@/lib/dictionary-util';
+import { Lang } from '../i18n/dictionaries';
 
 type Props = {
   params: Promise<{ lang: Lang }>;
@@ -26,7 +27,7 @@ type Props = {
 // 1. Генерация метаданных (SEO)
 export async function generateMetadata({ params }: Props) {
   const { lang } = await params; // Обязательно ждем параметры
-  const t = dictionaries[lang];
+  const t = await getDictionaryFromExcel(lang);
   return {
     title: t.seo.title,
     description: t.seo.description,
@@ -132,7 +133,7 @@ export default async function Home({ params }: Props) {
 
   // Ждем параметры (await) — это исправит ошибку undefined
   const { lang } = await params;
-  const t = dictionaries[lang];
+  const t = await getDictionaryFromExcel(lang);
 
   const services = [
     {
@@ -290,7 +291,7 @@ export default async function Home({ params }: Props) {
               </div>
 
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-                {t.extra.items.map((item: string, idx: number) => (
+                {Object.values(t.extra.items).map((item: string, idx: number) => (
                   <div
                     key={idx}
                     className='flex items-center gap-3 bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/10 hover:bg-white/20 transition cursor-default'
