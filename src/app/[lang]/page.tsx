@@ -227,7 +227,7 @@ export default async function Home({ params }: Props) {
 
       <PortfolioGallery dict={t} />
 
-      <Reviews />
+      <Reviews dict={t} />
 
       {/* Услуги */}
       <section id='services' className='py-20 bg-light'>

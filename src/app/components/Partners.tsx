@@ -24,9 +24,9 @@ const Partners = ({ dict }: { dict: any }) => {
       link: 'https://www.instagram.com/monarch_resto?igsh=MWhqZHRwbWllc3A0',
     },
     {
-      name: 'Солнечная Планета',
-      logo: '/partners/Солнечная-Планета.jpg',
-      link: 'https://www.instagram.com/sunplanet63?igsh=YmJlZnVib2U4aGZ2',
+      name: 'Armada',
+      logo: '/partners/armada.jpg',
+      link: 'https://www.instagram.com/armada.kg312?igsh=bnFhMmVvcnh2anZq',
     },
   ];
 
