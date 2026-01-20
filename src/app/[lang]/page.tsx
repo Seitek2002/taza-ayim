@@ -18,6 +18,7 @@ import Partners from '../components/Partners';
 import Header from '../components/Header';
 import { getDictionaryFromApi } from '@/lib/dictionary-api';
 import { Lang } from '../i18n/dictionaries';
+import Reviews from '../components/Reviews';
 
 type Props = {
   params: Promise<{ lang: Lang }>;
@@ -59,7 +60,7 @@ const Footer = ({ dict }: { dict: any }) => {
             </h3>
             <ul className='space-y-4'>
               <li className='flex items-center gap-3'>
-                <Phone className='text-secondary' />
+                <Phone className='text-white' />
                 <a
                   href='tel:+996555000000'
                   className='hover:text-secondary transition'
@@ -68,11 +69,11 @@ const Footer = ({ dict }: { dict: any }) => {
                 </a>
               </li>
               <li className='flex items-center gap-3'>
-                <MapPin className='text-secondary' />
+                <MapPin className='text-white' />
                 <span>{dict.footer.address}</span>
               </li>
               <li className='flex items-center gap-3'>
-                <Instagram className='text-secondary' />
+                <Instagram className='text-white' />
                 <a
                   href='https://www.instagram.com/taza_aiym'
                   target='_blank'
@@ -137,27 +138,28 @@ export default async function Home({ params }: Props) {
   const services = [
     {
       id: 1,
-      title: 'БАЗОВАЯ УБОРКА',
-      time: '1.5-2 часа',
-      desc: 'Утренняя или вечерняя комплексная уборка помещения («до» или «после» прихода сотрудников). Актуальна для небольших офисов.',
+      // Используем ?. (опциональную цепочку), чтобы не упало, если ключей еще нет в базе
+      title: t?.services?.items?.[1]?.title || 'БАЗОВАЯ УБОРКА',
+      time: t?.services?.items?.[1]?.time || '1.5-2 часа',
+      desc: t?.services?.items?.[1]?.desc || 'Утренняя или вечерняя...',
     },
     {
       id: 2,
-      title: 'ПОДДЕРЖИВАЮЩАЯ',
-      time: '6-8 часов',
-      desc: 'Специалисты в течение рабочего дня убирают помещение. Идеально для ТЦ, супермаркетов и мест с высокой проходимостью.',
+      title: t?.services?.items?.[2]?.title || 'ПОДДЕРЖИВАЮЩАЯ',
+      time: t?.services?.items?.[2]?.time || '6-8 часов',
+      desc: t?.services?.items?.[2]?.desc || 'Специалисты в течение...',
     },
     {
       id: 3,
-      title: 'ГЕНЕРАЛЬНАЯ УБОРКА',
-      time: '12-24 часов',
-      desc: 'Тщательная чистка всех труднодоступных мест. Рекомендуется проводить раз в несколько месяцев для любого помещения.',
+      title: t?.services?.items?.[3]?.title || 'ГЕНЕРАЛЬНАЯ УБОРКА',
+      time: t?.services?.items?.[3]?.time || '12-24 часов',
+      desc: t?.services?.items?.[3]?.desc || 'Тщательная чистка...',
     },
     {
       id: 4,
-      title: 'ПОСЛЕСТРОИТЕЛЬНАЯ',
-      time: '12-24 часов',
-      desc: 'Удаление пятен краски, клея, строительных растворов и пыли. Используем спец. оборудование и химию.',
+      title: t?.services?.items?.[4]?.title || 'ПОСЛЕСТРОИТЕЛЬНАЯ',
+      time: t?.services?.items?.[4]?.time || '12-24 часов',
+      desc: t?.services?.items?.[4]?.desc || 'Удаление пятен...',
     },
   ];
 
@@ -224,6 +226,8 @@ export default async function Home({ params }: Props) {
       <Partners dict={t} />
 
       <PortfolioGallery dict={t} />
+
+      <Reviews />
 
       {/* Услуги */}
       <section id='services' className='py-20 bg-light'>
