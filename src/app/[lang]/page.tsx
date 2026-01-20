@@ -169,7 +169,7 @@ export default async function Home({ params }: Props) {
       {/* Hero Section */}
       <section className='relative bg-light min-h-150 flex items-center justify-center overflow-hidden'>
         <div className='absolute inset-0 z-0'>
-          <div className='absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10'></div>
+          <div className='absolute inset-0 bg-linear-to-r from-white via-white/80 to-transparent z-10'></div>
           {/* Используем img, чтобы не мучиться с настройкой доменов в next.config.ts для демо */}
           <img
             src='https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop'
@@ -356,7 +356,7 @@ export default async function Home({ params }: Props) {
         href={whatsappLink}
         target='_blank'
         rel='noopener noreferrer'
-        className='fixed bottom-6 right-6 z-[60] bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform animate-bounce hover:animate-none flex items-center justify-center'
+        className='fixed bottom-6 right-6 z-60 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform animate-bounce hover:animate-none flex items-center justify-center'
         aria-label='Чат в WhatsApp'
       >
         <MessageCircle size={32} fill='white' className='text-white' />
