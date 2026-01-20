@@ -20,10 +20,17 @@ const PortfolioGallery = ({ dict }: { dict: any }) => {
     },
     {
       id: 2,
-      title: dict?.portfolio?.cases?.[2]?.title || 'Уборка офиса',
+      title: dict?.portfolio?.cases?.[2]?.title || 'Уборка квартиры',
       desc: dict?.portfolio?.cases?.[2]?.desc || 'Глубокая чистка...',
       before: '/dirty-office.png',
       after: '/clean-office.png',
+    },
+    {
+      id: 3,
+      title: dict?.portfolio?.cases?.[3]?.title || 'Уборка офиса',
+      desc: dict?.portfolio?.cases?.[3]?.desc || 'Глубокая чистка...',
+      before: '/dirty-flat.png',
+      after: '/clean-flat.jpg',
     },
   ];
 
