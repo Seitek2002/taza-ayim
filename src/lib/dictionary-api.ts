@@ -1,6 +1,5 @@
 import {
   dictionaries as defaultDictionaries,
-  Dictionary,
   Lang,
 } from '@/app/i18n/dictionaries';
 
@@ -34,7 +33,7 @@ function setNestedValue(obj: Record<string, any>, path: string, value: string) {
   }
 }
 
-export async function getDictionaryFromApi(lang: Lang): Promise<Dictionary> {
+export async function getDictionaryFromApi(lang: Lang) {
   try {
     const res = await fetch(API_URL, { next: { revalidate: 60 } });
 
@@ -73,9 +72,9 @@ export async function getDictionaryFromApi(lang: Lang): Promise<Dictionary> {
     // 3. Возвращаем как Dictionary
     // Здесь используем 'as unknown as Dictionary', чтобы "заткнуть" TypeScript,
     // если типы строгих литералов все еще конфликтуют. Это безопасно здесь.
-    return dictCopy as unknown as Dictionary;
+    return dictCopy;
   } catch (error) {
     console.error('Ошибка получения данных с API:', error);
-    return defaultDictionaries[lang] as unknown as Dictionary;
+    return defaultDictionaries[lang];
   }
 }
