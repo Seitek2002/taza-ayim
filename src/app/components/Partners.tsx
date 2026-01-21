@@ -52,7 +52,7 @@ const Partners = ({ dict }: { dict: any }) => {
               rel='noopener noreferrer'
               className='group flex flex-col items-center p-6 bg-gray-50 rounded-2xl border border-transparent hover:border-gray-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300'
             >
-              <div className='relative w-full h-24 mb-4 grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500'>
+              <div className='relative w-full h-24 mb-4'>
                 <Image
                   src={partner.logo}
                   alt={`Логотип ${partner.name}`}

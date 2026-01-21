@@ -45,7 +45,7 @@ const Chemicals = ({ dict }: { dict: any }) => {
               className='flex flex-col items-center text-center p-8 rounded-3xl bg-gray-50 border border-gray-100 hover:shadow-xl transition-all duration-300 group'
             >
               {/* Логотип */}
-              <div className='relative w-48 h-24 mb-6 grayscale group-hover:grayscale-0 transition-all duration-500'>
+              <div className='relative w-48 h-24 mb-6'>
                 <Image
                   src={brand.logo}
                   alt={brand.name}

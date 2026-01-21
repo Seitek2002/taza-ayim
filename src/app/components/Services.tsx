@@ -1,5 +1,4 @@
 import { Clock } from 'lucide-react';
-import Image from 'next/image';
 
 const Services = ({ t }: { t: any }) => {
   const whatsappLink = 'https://wa.me/996555000000';
@@ -12,7 +11,7 @@ const Services = ({ t }: { t: any }) => {
       desc: t?.services?.items?.[1]?.desc || 'Утренняя или вечерняя...',
       // НОВОЕ ФОТО: Протирание поверхностей, уютно
       image:
-        'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?auto=format&fit=crop&w=800&q=80',
+        'https://service-cleaning.ru/wp-content/uploads/2021/01/general-ub-600.jpg',
     },
     {
       id: 2,
@@ -21,7 +20,7 @@ const Services = ({ t }: { t: any }) => {
       desc: t?.services?.items?.[2]?.desc || 'Специалисты в течение...',
       // Фото: Светлый чистый офис/магазин (оставил старое, оно рабочее)
       image:
-        'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
+        'https://avatars.mds.yandex.net/i?id=48f68386395c4095589a5635d5db435b607be9d1-10778769-images-thumbs&n=13',
     },
     {
       id: 3,
@@ -30,7 +29,7 @@ const Services = ({ t }: { t: any }) => {
       desc: t?.services?.items?.[3]?.desc || 'Тщательная чистка...',
       // НОВОЕ ФОТО: Тщательная чистка плиты (акцент на деталях)
       image:
-        'https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?auto=format&fit=crop&w=800&q=80',
+        'https://cleaning54.ru/wp-content/uploads/2021/12/myte-okon-akciya-cleaning54.jpg',
     },
     {
       id: 4,
@@ -39,7 +38,7 @@ const Services = ({ t }: { t: any }) => {
       desc: t?.services?.items?.[4]?.desc || 'Удаление пятен...',
       // Фото: Стройка/ремонт (оставил старое, рабочее)
       image:
-        'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80',
+        'https://expert-cleaning.com/wp-content/uploads/2023/04/posle-remonta.jpg',
     },
   ];
 
@@ -64,7 +63,7 @@ const Services = ({ t }: { t: any }) => {
               {/* Блок с изображением */}
               <div className='relative h-48 w-full bg-gray-200 overflow-hidden'>
                 {/* Используем компонент Image вместо img */}
-                <Image
+                <img
                   src={service.image}
                   alt={service.title}
                   fill
