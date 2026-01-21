@@ -66,9 +66,7 @@ const Services = ({ t }: { t: any }) => {
                 <img
                   src={service.image}
                   alt={service.title}
-                  fill
                   className='object-cover transition-transform duration-500 group-hover:scale-110'
-                  sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw'
                 />
 
                 {/* Время поверх картинки */}
