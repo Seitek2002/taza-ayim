@@ -19,6 +19,7 @@ import Services from '../components/Services';
 import DopServices from '../components/DopServices';
 import Advantages from '../components/Advantages';
 import VideoShowcase from '../components/VideoShowcase';
+import SocialWidget from '../components/SocialWidget';
 
 type Props = {
   params: Promise<{ lang: Lang }>;
@@ -239,15 +240,7 @@ export default async function Home({ params }: Props) {
       {/* 11. FOOTER */}
       <Footer dict={t} />
 
-      <a
-        href={whatsappLink}
-        target='_blank'
-        rel='noopener noreferrer'
-        className='fixed bottom-6 right-6 z-60 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform animate-bounce hover:animate-none flex items-center justify-center'
-        aria-label='Чат в WhatsApp'
-      >
-        <MessageCircle size={32} fill='white' className='text-white' />
-      </a>
+      <SocialWidget />
     </main>
   );
 }
