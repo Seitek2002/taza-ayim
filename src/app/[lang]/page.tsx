@@ -18,6 +18,7 @@ import Chemicals from '../components/Chemicals';
 import Services from '../components/Services';
 import DopServices from '../components/DopServices';
 import Advantages from '../components/Advantages';
+import VideoShowcase from '../components/VideoShowcase';
 
 type Props = {
   params: Promise<{ lang: Lang }>;
@@ -191,6 +192,8 @@ export default async function Home({ params }: Props) {
           </p>
         </div>
       </section>
+
+      <VideoShowcase dict={t} />
 
       {/* 3. PARTNERS - Доверие (Поднимаем выше) */}
       <Partners dict={t} />
