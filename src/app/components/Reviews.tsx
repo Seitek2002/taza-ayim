@@ -2,12 +2,18 @@
 
 import { useRef, useState } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, Instagram, Play } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Instagram,
+  Play,
+  Loader2,
+} from 'lucide-react';
 
 type ReviewItem = {
   type: 'image' | 'video';
   src: string;
-  poster?: string; // Опционально, если вдруг захочешь поставить красивую фотку
+  poster?: string;
 };
 
 const reviewsList: ReviewItem[] = [
@@ -16,9 +22,9 @@ const reviewsList: ReviewItem[] = [
   { type: 'image', src: '/reviews/item-2.jpg' },
 
   // ВИДЕО
-  { type: 'video', src: '/reviews/video-1.MP4' }, // Без постера (будет первый кадр + иконка)
+  { type: 'video', src: '/reviews/video-1.MP4' },
   { type: 'video', src: '/reviews/video-2.MP4' },
-  { type: 'video', src: '/reviews/video-3.MP4' }, // Можно без постера
+  { type: 'video', src: '/reviews/video-3.MP4' },
 
   { type: 'image', src: '/reviews/item-3.jpg' },
   { type: 'image', src: '/reviews/item-4.jpg' },
@@ -26,7 +32,14 @@ const reviewsList: ReviewItem[] = [
 
 const Reviews = ({ dict }: { dict: any }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // ID видео, которое ДОЛЖНО играть
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(
+    null,
+  );
+
+  // ID видео, которое сейчас ГРУЗИТСЯ (буферизация)
+  const [bufferingVideoIndex, setBufferingVideoIndex] = useState<number | null>(
     null,
   );
 
@@ -43,16 +56,35 @@ const Reviews = ({ dict }: { dict: any }) => {
 
   const toggleVideo = (idx: number, videoElement: HTMLVideoElement) => {
     if (videoElement.paused) {
-      // Пауза всех остальных видео (чтобы не было каши из звуков)
+      // 1. Пауза всех остальных
       document.querySelectorAll('video').forEach((vid) => {
         if (vid !== videoElement) vid.pause();
       });
 
-      videoElement.play();
+      // 2. Запуск текущего
+      const playPromise = videoElement.play();
+
+      // 3. Сразу показываем лоадер, пока промис выполняется
       setPlayingVideoIndex(idx);
+      setBufferingVideoIndex(idx);
+
+      // Обработка ошибок (например, если браузер запретил автоплей)
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            // Воспроизведение началось успешно
+            // Лоадер уберется событием onPlaying
+          })
+          .catch((error) => {
+            console.error('Ошибка воспроизведения:', error);
+            setPlayingVideoIndex(null);
+            setBufferingVideoIndex(null);
+          });
+      }
     } else {
       videoElement.pause();
       setPlayingVideoIndex(null);
+      setBufferingVideoIndex(null);
     }
   };
 
@@ -105,31 +137,43 @@ const Reviews = ({ dict }: { dict: any }) => {
                   <div className='relative w-full h-full group/video cursor-pointer'>
                     <video
                       src={item.src}
-                      // Если постера нет, видео просто покажет 1-й кадр.
-                      // А наша иконка Play будет сверху.
                       poster={item.poster}
                       className='w-full h-full object-cover'
                       playsInline
                       loop
+                      // --- ВАЖНЫЕ СОБЫТИЯ ---
+                      // 1. Когда данных мало и видео тупит -> Показываем лоадер
+                      onWaiting={() => setBufferingVideoIndex(idx)}
+                      // 2. Когда данные есть и видео пошло -> Скрываем лоадер
+                      onPlaying={() => setBufferingVideoIndex(null)}
+                      // 3. Если поставили на паузу -> Скрываем всё
+                      onPause={() => {
+                        setPlayingVideoIndex(null);
+                        setBufferingVideoIndex(null);
+                      }}
                       onClick={(e) => toggleVideo(idx, e.currentTarget)}
-                      // Когда видео заканчивается или ставится на паузу через нативные контролы (на всякий случай)
-                      onPause={() => setPlayingVideoIndex(null)}
-                      onPlay={() => setPlayingVideoIndex(idx)}
                     />
 
-                    {/* --- ВОТ ТВОЙ "ПОСТЕР" ИЗ ИКОНКИ --- */}
-                    {/* Показываем этот блок, если видео НЕ играет */}
+                    {/* ЛОАДЕР (Крутилка) */}
+                    {/* Показываем, если видео должно играть, но оно в статусе буферизации */}
+                    {playingVideoIndex === idx &&
+                      bufferingVideoIndex === idx && (
+                        <div className='absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none z-20'>
+                          <Loader2 className='w-12 h-12 text-white animate-spin' />
+                        </div>
+                      )}
+
+                    {/* КНОПКА PLAY (Большая) */}
+                    {/* Показываем только если видео НЕ играет и НЕ грузится */}
                     {playingVideoIndex !== idx && (
                       <div
-                        className='absolute inset-0 flex items-center justify-center bg-black/30 transition-colors group-hover/video:bg-black/40'
+                        className='absolute inset-0 flex items-center justify-center bg-black/30 transition-colors group-hover/video:bg-black/40 z-10'
                         onClick={(e) => {
-                          // Пробрасываем клик на видео, чтобы оно запустилось
                           const video = e.currentTarget
                             .previousElementSibling as HTMLVideoElement;
                           toggleVideo(idx, video);
                         }}
                       >
-                        {/* Сама кнопка Play */}
                         <div className='w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 shadow-xl transition-transform transform group-hover/video:scale-110'>
                           <Play
                             fill='white'
