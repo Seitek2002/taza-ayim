@@ -4,11 +4,10 @@ import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Instagram, Play } from 'lucide-react';
 
-// Обновленная структура данных
 type ReviewItem = {
   type: 'image' | 'video';
   src: string;
-  poster?: string; // Для видео желательно (картинка-заглушка)
+  poster?: string; // Опционально, если вдруг захочешь поставить красивую фотку
 };
 
 const reviewsList: ReviewItem[] = [
@@ -17,19 +16,9 @@ const reviewsList: ReviewItem[] = [
   { type: 'image', src: '/reviews/item-2.jpg' },
 
   // ВИДЕО
-  {
-    type: 'video',
-    src: '/reviews/video-1.MP4',
-  },
-  {
-    type: 'video',
-    src: '/reviews/video-2.MP4',
-  },
-  {
-    type: 'video',
-    src: '/reviews/video-3.MP4',
-    poster: '/reviews/video-poster-1.jpg', // Желательно сделать скриншот первого кадра
-  },
+  { type: 'video', src: '/reviews/video-1.MP4' }, // Без постера (будет первый кадр + иконка)
+  { type: 'video', src: '/reviews/video-2.MP4' },
+  { type: 'video', src: '/reviews/video-3.MP4' }, // Можно без постера
 
   { type: 'image', src: '/reviews/item-3.jpg' },
   { type: 'image', src: '/reviews/item-4.jpg' },
@@ -37,7 +26,6 @@ const reviewsList: ReviewItem[] = [
 
 const Reviews = ({ dict }: { dict: any }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  // Храним ID активного видео, которое сейчас играет (чтобы не играли все сразу)
   const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(
     null,
   );
@@ -46,17 +34,20 @@ const Reviews = ({ dict }: { dict: any }) => {
     if (scrollRef.current) {
       const { current } = scrollRef;
       const scrollAmount = 300;
-      if (direction === 'left') {
-        current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-      } else {
-        current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-      }
+      current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
     }
   };
 
   const toggleVideo = (idx: number, videoElement: HTMLVideoElement) => {
     if (videoElement.paused) {
-      // Ставим на паузу все остальные, если нужно (опционально)
+      // Пауза всех остальных видео (чтобы не было каши из звуков)
+      document.querySelectorAll('video').forEach((vid) => {
+        if (vid !== videoElement) vid.pause();
+      });
+
       videoElement.play();
       setPlayingVideoIndex(idx);
     } else {
@@ -101,12 +92,12 @@ const Reviews = ({ dict }: { dict: any }) => {
             {reviewsList.map((item, idx) => (
               <div
                 key={idx}
-                className='snap-center shrink-0 w-65 md:w-75 h-125 md:h-150 relative rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-black'
+                className='snap-center shrink-0 w-65 md:w-75 h-125 md:h-150 relative rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-900'
               >
                 {item.type === 'image' ? (
                   <Image
                     src={item.src}
-                    alt={`Отзыв клиента ${idx + 1}`}
+                    alt={`Отзыв ${idx}`}
                     fill
                     className='object-cover'
                   />
@@ -114,27 +105,39 @@ const Reviews = ({ dict }: { dict: any }) => {
                   <div className='relative w-full h-full group/video cursor-pointer'>
                     <video
                       src={item.src}
+                      // Если постера нет, видео просто покажет 1-й кадр.
+                      // А наша иконка Play будет сверху.
                       poster={item.poster}
                       className='w-full h-full object-cover'
                       playsInline
                       loop
-                      // На клик запускаем/останавливаем
                       onClick={(e) => toggleVideo(idx, e.currentTarget)}
+                      // Когда видео заканчивается или ставится на паузу через нативные контролы (на всякий случай)
+                      onPause={() => setPlayingVideoIndex(null)}
+                      onPlay={() => setPlayingVideoIndex(idx)}
                     />
 
-                    {/* Иконка Play по центру, исчезает если видео играет */}
+                    {/* --- ВОТ ТВОЙ "ПОСТЕР" ИЗ ИКОНКИ --- */}
+                    {/* Показываем этот блок, если видео НЕ играет */}
                     {playingVideoIndex !== idx && (
-                      <div className='absolute inset-0 flex items-center justify-center pointer-events-none bg-black/20'>
-                        <div className='w-14 h-14 bg-white/90 rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm'>
+                      <div
+                        className='absolute inset-0 flex items-center justify-center bg-black/30 transition-colors group-hover/video:bg-black/40'
+                        onClick={(e) => {
+                          // Пробрасываем клик на видео, чтобы оно запустилось
+                          const video = e.currentTarget
+                            .previousElementSibling as HTMLVideoElement;
+                          toggleVideo(idx, video);
+                        }}
+                      >
+                        {/* Сама кнопка Play */}
+                        <div className='w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 shadow-xl transition-transform transform group-hover/video:scale-110'>
                           <Play
-                            fill='black'
-                            className='ml-1 w-6 h-6 text-black'
+                            fill='white'
+                            className='ml-1 w-8 h-8 text-white'
                           />
                         </div>
                       </div>
                     )}
-
-                    {/* Звук вкл/выкл или другие контролы можно добавить сюда */}
                   </div>
                 )}
               </div>
