@@ -19,7 +19,44 @@ const Chemicals = ({ dict }: { dict: any }) => {
       logo: '/brands/kiehl.png', // Убедись, что нашел и положил картинку сюда
       desc: dict?.chemicals?.kiehl?.desc || 'Экологичные средства...',
     },
+    {
+      id: 'GRASS',
+      name: 'GRASS',
+      country: 'Russia',
+      logo: '/brands/grass.jpg', // Убедись, что нашел и положил картинку сюда
+      desc: dict?.chemicals?.kiehl?.desc || 'Экологичные средства...',
+    },
   ];
+
+  const renderFlag = (country: string) => {
+    if (country === 'Germany') {
+      return (
+        <svg viewBox='0 0 5 3' className='w-full h-full object-cover'>
+          <rect width='5' height='3' y='0' x='0' fill='#000' />
+          <rect width='5' height='2' y='1' x='0' fill='#D00' />
+          <rect width='5' height='1' y='2' x='0' fill='#FFCE00' />
+        </svg>
+      );
+    }
+    if (country === 'Russia') {
+      return (
+        <svg viewBox='0 0 9 6' className='w-full h-full object-cover'>
+          <rect width='9' height='6' fill='#fff' />
+          <rect width='9' height='4' y='2' fill='#0039A6' />
+          <rect width='9' height='2' y='4' fill='#D52B1E' />
+          {/* Тонкая рамка, чтобы белый цвет не сливался с фоном */}
+          <rect
+            width='9'
+            height='6'
+            fill='none'
+            stroke='#e5e7eb'
+            strokeWidth='0.5'
+          />
+        </svg>
+      );
+    }
+    return null;
+  };
 
   return (
     <section className='py-20 bg-white' id='chemicals'>
@@ -38,14 +75,15 @@ const Chemicals = ({ dict }: { dict: any }) => {
         </div>
 
         {/* Сетка брендов */}
-        <div className='grid md:grid-cols-2 gap-8 max-w-4xl mx-auto'>
+        <div className='grid md:grid-cols-3 gap-8 max-w-5xl mx-auto'>
           {brands.map((brand) => (
             <div
               key={brand.id}
               className='flex flex-col items-center text-center p-8 rounded-3xl bg-gray-50 border border-gray-100 hover:shadow-xl transition-all duration-300 group'
             >
               {/* Логотип */}
-              <div className='relative w-48 h-24 mb-6'>
+              {/* Уменьшил mb-6 до mb-4, чтобы название было ближе к лого */}
+              <div className='relative w-48 h-24 mb-4'>
                 <Image
                   src={brand.logo}
                   alt={brand.name}
@@ -54,18 +92,19 @@ const Chemicals = ({ dict }: { dict: any }) => {
                 />
               </div>
 
+              {/* [НОВОЕ] Название бренда */}
+              <h3 className='text-2xl font-bold text-gray-900 mb-3'>
+                {brand.name}
+              </h3>
+
               {/* Флаг и Страна */}
-              <div className='flex items-center gap-2 mb-4 bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100'>
+              <div className='flex items-center gap-2 mb-6 bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100'>
                 {/* Иконка флага Германии (SVG) */}
                 <div className='w-5 h-5 rounded-full overflow-hidden relative'>
-                  <svg viewBox='0 0 5 3' className='w-full h-full object-cover'>
-                    <rect width='5' height='3' y='0' x='0' fill='#000' />
-                    <rect width='5' height='2' y='1' x='0' fill='#D00' />
-                    <rect width='5' height='1' y='2' x='0' fill='#FFCE00' />
-                  </svg>
+                  {renderFlag(brand.country)}
                 </div>
                 <span className='text-sm font-bold text-gray-700'>
-                  {brand.country}
+                  {brand.country === 'Germany' ? 'Германия' : brand.country === 'Russia' ? 'Россия' : brand.country}
                 </span>
               </div>
 
