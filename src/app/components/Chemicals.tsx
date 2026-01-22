@@ -24,7 +24,7 @@ const Chemicals = ({ dict }: { dict: any }) => {
       name: 'GRASS',
       country: 'Russia',
       logo: '/brands/grass.jpg', // Убедись, что нашел и положил картинку сюда
-      desc: dict?.chemicals?.kiehl?.desc || 'Экологичные средства...',
+      desc: dict?.chemicals?.grass?.desc || 'Экологичные средства...',
     },
   ];
 
