@@ -1,7 +1,7 @@
 import { CheckCircle2 } from 'lucide-react';
 
 const DopServices = ({ t }: { t: any }) => {
-  const whatsappLink = 'https://wa.me/996555000000';
+  const whatsappLink = 'https://wa.me/996559554225';
 
   return (
     <section className='py-20 bg-white'>

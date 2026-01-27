@@ -63,10 +63,19 @@ const Footer = ({ dict }: { dict: any }) => {
               <li className='flex items-center gap-3'>
                 <Phone className='text-white' />
                 <a
-                  href='tel:+996555000000'
+                  href='tel:+996559554225'
                   className='hover:text-secondary transition'
                 >
-                  +996 555 00 00 00
+                  +996559554225
+                </a>
+              </li>
+              <li className='flex items-center gap-3'>
+                <Phone className='text-white' />
+                <a
+                  href='tel:+996509554225'
+                  className='hover:text-secondary transition'
+                >
+                  +996509554225
                 </a>
               </li>
               <li className='flex items-center gap-3'>
@@ -130,7 +139,7 @@ const Footer = ({ dict }: { dict: any }) => {
 
 // 3. ГЛАВНАЯ СТРАНИЦА
 export default async function Home({ params }: Props) {
-  const whatsappLink = 'https://wa.me/996555000000';
+  // const whatsappLink = 'https://wa.me/996559554225';
 
   const { lang } = await params;
   const t = await getDictionaryFromApi(lang);

@@ -19,14 +19,14 @@ const SocialWidget = () => {
     {
       id: 'whatsapp',
       icon: <Phone size={24} />,
-      href: 'https://wa.me/996555000000',
+      href: 'https://wa.me/996559554225',
       color: 'bg-[#25D366]',
       label: 'WhatsApp',
     },
     {
       id: 'telegram',
       icon: <Send size={24} />, // Иконка самолетика для ТГ
-      href: 'https://t.me/Maia_0505',
+      href: 'https://t.me/996559554225',
       color: 'bg-[#0088cc]',
       label: 'Telegram',
     },

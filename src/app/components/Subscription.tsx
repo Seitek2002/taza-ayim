@@ -174,7 +174,7 @@ const Subscription = ({ dict }: { dict: any }) => {
                       </span>
                     </div>
                     <a
-                      href={`https://wa.me/996555000000?text=Здравствуйте, интересует абонемент на ${plan.time}`}
+                      href={`https://wa.me/996559554225?text=Здравствуйте, интересует абонемент на ${plan.time}`}
                       target='_blank'
                       className={`block w-full py-3 rounded-xl font-bold transition-colors ${
                         idx === 1
@@ -221,7 +221,7 @@ const Subscription = ({ dict }: { dict: any }) => {
                     {item.price} {dict?.calculator?.total?.currency}
                   </p>
                   <a
-                    href={`https://wa.me/996555000000?text=Здравствуйте, интересует организация пространства: ${item.room}`}
+                    href={`https://wa.me/996559554225?text=Здравствуйте, интересует организация пространства: ${item.room}`}
                     target='_blank'
                     className='block w-full py-2 border-2 border-primary text-primary font-bold rounded-lg text-center hover:bg-primary hover:text-white transition-colors'
                   >

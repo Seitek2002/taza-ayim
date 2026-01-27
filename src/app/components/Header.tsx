@@ -75,7 +75,7 @@ const Header = ({ lang, dict }: HeaderProps) => {
           </Link>
 
           <a
-            href='https://wa.me/996555000000'
+            href='https://wa.me/996559554225'
             className='bg-primary hover:bg-green-700 text-white px-5 py-2.5 rounded-full font-bold transition duration-300 shadow-lg shadow-primary/20 flex items-center gap-2 transform hover:-translate-y-0.5'
           >
             <Phone size={18} />
@@ -120,7 +120,7 @@ const Header = ({ lang, dict }: HeaderProps) => {
             ))}
 
             <a
-              href='https://wa.me/996555000000'
+              href='https://wa.me/996559554225'
               className='bg-primary text-white py-4 rounded-xl text-center font-bold flex justify-center items-center gap-2 mt-4'
             >
               <Phone size={20} />

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
 const VideoShowcase = ({ dict }: { dict: any }) => {
-  // По умолчанию true, так как видео начинает грузиться при маунте
   const [isLoading, setIsLoading] = useState(true);
 
   return (

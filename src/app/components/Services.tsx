@@ -1,7 +1,7 @@
 import { Clock } from 'lucide-react';
 
 const Services = ({ t }: { t: any }) => {
-  const whatsappLink = 'https://wa.me/996555000000';
+  const whatsappLink = 'https://wa.me/996559554225';
 
   const services = [
     {
