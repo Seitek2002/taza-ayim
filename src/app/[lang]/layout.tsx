@@ -103,6 +103,10 @@ export async function generateMetadata({
         ky: `${baseUrl}/ky`,
       },
     },
+    verification: {
+      google: 'EAilMGYlrmojAe2QBC-Oo__XPDxOWnu9sFBGGa-bRlM', 
+      // Не весь тег <meta...>, а только набор букв и цифр из атрибута content
+    },
   };
 }
 
