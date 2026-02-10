@@ -15,7 +15,6 @@ RUN adduser --system --uid 1001 nextjs
 # Копируем необходимые файлы из вашей локальной папки .next/standalone
 # Standalone содержит в себе и сервер, и необходимые node_modules
 COPY ./public ./public
-COPY ./.next/standalone ./
 COPY ./.next/static ./.next/static
 
 # Устанавливаем права для пользователя
