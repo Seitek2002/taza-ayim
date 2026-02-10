@@ -136,6 +136,7 @@ const Reviews = ({ dict }: { dict: any }) => {
                 ) : (
                   <div className='relative w-full h-full group/video cursor-pointer'>
                     <video
+                      preload="none"
                       src={item.src}
                       poster={item.poster}
                       className='w-full h-full object-cover'

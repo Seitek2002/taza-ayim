@@ -68,6 +68,7 @@ const VideoShowcase = ({ dict }: { dict: any }) => {
                 onPlaying={() => setIsLoading(false)}
                 // Когда данные первого кадра загружены (подстраховка)
                 onLoadedData={() => setIsLoading(false)}
+                preload="none"
               />
 
               {/* САМ ЛОАДЕР */}
