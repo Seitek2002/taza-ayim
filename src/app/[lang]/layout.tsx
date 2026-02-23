@@ -4,7 +4,7 @@ import { Montserrat } from 'next/font/google';
 
 const seoDict = {
   ru: {
-    title: 'Таза Айым — Клининговая компания в Бишкеке | Уборка и Химчистка',
+    title: 'Клининговая компания в Бишкеке - Таза Айым | Уборка и Химчистка',
     description:
       'Профессиональная уборка квартир, офисов и домов в Бишкеке. Химчистка мебели, мойка окон, уборка после ремонта. ⚡ Быстро, качественно, эко-средства.',
     keywords: [
@@ -17,7 +17,7 @@ const seoDict = {
     ],
   },
   ky: {
-    title: 'Таза Айым — Бишкектеги клининг кызматы | Үй тазалоо',
+    title: 'Бишкектеги клининг кызматы — Таза Айым | Үй тазалоо',
     description:
       'Бишкек шаарында үйлөрдү, кеңселерди кесипкөй тазалоо. Эмеректерди химиялык тазалоо, терезе жуу, ремонттон кийинки тазалоо. ⚡ Тез жана сапаттуу.',
     keywords: [
@@ -61,9 +61,9 @@ export async function generateMetadata({
     description: dict.description,
     keywords: dict.keywords,
     // Важно для роботов: говорим, кто автор и где мы находимся
-    authors: [{ name: 'Taza Aiym Cleaning' }],
-    creator: 'Taza Aiym',
-    publisher: 'Taza Aiym',
+    authors: [{ name: 'Taza Ayim Cleaning' }],
+    creator: 'Taza Ayim',
+    publisher: 'Taza Ayim',
     robots: {
       index: true,
       follow: true,
