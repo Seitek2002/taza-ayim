@@ -23,13 +23,13 @@ const SocialWidget = () => {
       color: 'bg-[#25D366]',
       label: 'WhatsApp',
     },
-    {
-      id: 'telegram',
-      icon: <Send size={24} />, // Иконка самолетика для ТГ
-      href: 'https://t.me/996559554225',
-      color: 'bg-[#0088cc]',
-      label: 'Telegram',
-    },
+    // {
+    //   id: 'telegram',
+    //   icon: <Send size={24} />, // Иконка самолетика для ТГ
+    //   href: 'https://t.me/996559554225',
+    //   color: 'bg-[#0088cc]',
+    //   label: 'Telegram',
+    // },
     {
       id: 'instagram',
       icon: <Instagram size={24} />,
