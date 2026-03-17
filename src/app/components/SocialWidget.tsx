@@ -19,7 +19,7 @@ const SocialWidget = () => {
     {
       id: 'whatsapp',
       icon: <Phone size={24} />,
-      href: 'https://wa.me/996559554225',
+      href: 'https://wa.me/996709058182',
       color: 'bg-[#25D366]',
       label: 'WhatsApp',
     },
@@ -33,14 +33,14 @@ const SocialWidget = () => {
     {
       id: 'instagram',
       icon: <Instagram size={24} />,
-      href: 'https://www.instagram.com/taza_aiym?igsh=MTNteWJiOTJ4c3B3eg%3D%3D&utm_source=qr',
+      href: 'https://www.instagram.com/taza_ayim/',
       color: 'bg-linear-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]', // Градиент Инсты
       label: 'Instagram',
     },
     {
       id: 'facebook',
       icon: <Facebook size={24} />,
-      href: '#', // Пока пусто
+      href: 'https://www.facebook.com/profile.php?id=61583405274279',
       color: 'bg-[#1877F2]',
       label: 'Facebook',
     },
