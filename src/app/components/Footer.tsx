@@ -10,7 +10,7 @@ export const Footer = ({ dict }: { dict: any }) => {
           <div>
             <div className='flex items-center gap-3 mb-6'>
               <div className='bg-white p-1 rounded-full'>
-                <Image src={'/logo.svg'} width={50} height={50} alt={'logo'} />
+                <Image src={'/logo.png'} width={50} height={50} alt={'logo'} />
               </div>
               <span className='text-2xl font-bold'>Таза Айым</span>
             </div>

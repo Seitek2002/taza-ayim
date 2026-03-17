@@ -41,7 +41,7 @@ const montserrat = Montserrat({
 //   title: 'Таза Айым',
 //   description: 'Клининговая компания',
 //   icons: {
-//     icon: '/logo.svg',
+//     icon: '/logo.png',
 //   },
 // };
 
@@ -74,9 +74,9 @@ export async function generateMetadata({
     },
     // Иконки
     icons: {
-      icon: '/logo.svg',
-      shortcut: '/logo.svg',
-      apple: '/logo.svg', // Лучше сделать png 180x180 для Apple
+      icon: '/logo.png',
+      shortcut: '/logo.png',
+      apple: '/logo.png', // Лучше сделать png 180x180 для Apple
     },
     // Open Graph — это то, как ссылка выглядит в WhatsApp, Telegram, Facebook
     openGraph: {
@@ -104,7 +104,7 @@ export async function generateMetadata({
       },
     },
     verification: {
-      google: 'EAilMGYlrmojAe2QBC-Oo__XPDxOWnu9sFBGGa-bRlM', 
+      google: 'EAilMGYlrmojAe2QBC-Oo__XPDxOWnu9sFBGGa-bRlM',
       // Не весь тег <meta...>, а только набор букв и цифр из атрибута content
     },
   };

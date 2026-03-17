@@ -40,7 +40,7 @@ const Header = ({ lang, dict }: HeaderProps) => {
       <div className='container mx-auto px-4 py-3 flex items-center justify-between'>
         {/* Логотип */}
         <Link href={`/${lang}`} className='flex items-center gap-3 group'>
-          <Image src={'/logo.svg'} width={50} height={50} alt={'logo'} />
+          <Image src={'/logo.png'} width={50} height={50} alt={'logo'} />
           <div className='flex flex-col'>
             <span className='text-xl md:text-2xl font-bold text-primary leading-none group-hover:text-secondary transition-colors'>
               Таза Айым
