@@ -70,7 +70,7 @@ const Partners = ({ dict }: { dict: any }) => {
 
         <div className='text-center mt-12'>
           <a
-            href='https://wa.me/996559554225'
+            href='https://wa.me/996709058182'
             className='inline-flex items-center gap-2 text-primary font-bold hover:text-secondary transition-colors border-b-2 border-primary/20 hover:border-secondary pb-1'
           >
             {dict.partners.cta}

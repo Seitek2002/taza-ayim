@@ -26,7 +26,7 @@ const SocialWidget = () => {
     // {
     //   id: 'telegram',
     //   icon: <Send size={24} />, // Иконка самолетика для ТГ
-    //   href: 'https://t.me/996559554225',
+    //   href: 'https://t.me/996709058182',
     //   color: 'bg-[#0088cc]',
     //   label: 'Telegram',
     // },

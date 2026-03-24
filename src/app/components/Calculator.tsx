@@ -92,7 +92,7 @@ const Calculator = ({ dict }: { dict: any }) => {
     if (activeTab === 'truck') text += `🚛 Аренда автовышки: ${truckHours} ч`;
 
     text += `\n💰 ~${total} с`;
-    return `https://wa.me/996559554225?text=${encodeURIComponent(text)}`;
+    return `https://wa.me/996709058182?text=${encodeURIComponent(text)}`;
   };
 
   return (
