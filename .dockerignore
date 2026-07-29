@@ -1,0 +1,33 @@
+# зависимости и сборки — ставятся/собираются внутри образа
+node_modules
+.next
+out
+build
+coverage
+
+# git и IDE
+.git
+.gitignore
+.vscode
+.idea
+
+# docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# env и логи
+.env*
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# прочее
+.DS_Store
+*.pem
+*.tsbuildinfo
+README.md
+docs
+.vercel

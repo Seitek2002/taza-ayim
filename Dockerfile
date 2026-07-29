@@ -35,27 +35,20 @@
 # ========================
 FROM node:20-slim AS deps
 
-# Устанавливаем зависимости
-RUN apt-get update && apt-get install -y \
-    python3 \
-    make \
-    g++ \
-    libvips-dev \
-    && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /app
 
 # Копируем файлы зависимостей
 COPY package.json package-lock.json* yarn.lock* pnpm-lock.yaml* ./
 
-# Устанавливаем зависимости с правильной переустановкой sharp
+# Ставим зависимости. sharp приходит как optional-зависимость Next и
+# подтягивает готовый бинарник @img/sharp-linux-x64 — собирать из исходников
+# (python3/make/g++/libvips-dev) и переустанавливать вручную не нужно.
+# Кэш чистим в том же слое, иначе он останется в образе.
 RUN \
   if [ -f yarn.lock ]; then \
-    yarn --frozen-lockfile; \
+    yarn --frozen-lockfile && yarn cache clean; \
   elif [ -f package-lock.json ]; then \
-    npm ci --include=optional && \
-    npm uninstall sharp && \
-    npm install --os=linux --cpu=x64 sharp; \
+    npm ci --include=optional && npm cache clean --force; \
   elif [ -f pnpm-lock.yaml ]; then \
     corepack enable pnpm && pnpm i --frozen-lockfile; \
   else \
@@ -66,11 +59,6 @@ RUN \
 # Build stage
 # ========================
 FROM node:20-slim AS builder
-
-# Устанавливаем зависимости для сборки
-RUN apt-get update && apt-get install -y \
-    libvips-dev \
-    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
