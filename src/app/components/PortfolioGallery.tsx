@@ -112,7 +112,8 @@ const PortfolioGallery = ({ dict }: { dict: any }) => {
                   </p>
                   {activeCase.id === item.id && (
                     <div className='flex items-center gap-1 text-xs font-bold text-secondary-dark mt-2 animate-fadeIn'>
-                      <CheckCircle2 size={14} /> Сейчас на экране
+                      <CheckCircle2 size={14} />{' '}
+                      {dict?.portfolio?.current || 'Сейчас на экране'}
                     </div>
                   )}
                 </div>

@@ -103,7 +103,7 @@ const Chemicals = ({ dict }: { dict: any }) => {
                   {renderFlag(brand.country)}
                 </div>
                 <span className='text-sm font-bold text-gray-700'>
-                  {brand.country === 'Germany' ? 'Германия' : brand.country === 'Russia' ? 'Россия' : brand.country}
+                  {dict?.chemicals?.countries?.[brand.country] || brand.country}
                 </span>
               </div>
 
@@ -118,13 +118,15 @@ const Chemicals = ({ dict }: { dict: any }) => {
             <div className='p-2 bg-green-100 text-green-600 rounded-full'>
               <Leaf size={20} />
             </div>
-            <span>Эко-сертификаты</span>
+            <span>{dict?.chemicals?.badges?.eco || 'Эко-сертификаты'}</span>
           </div>
           <div className='flex items-center gap-2'>
             <div className='p-2 bg-blue-100 text-blue-600 rounded-full'>
               <ShieldCheck size={20} />
             </div>
-            <span>Гипоаллергенно</span>
+            <span>
+              {dict?.chemicals?.badges?.hypoallergenic || 'Гипоаллергенно'}
+            </span>
           </div>
         </div>
       </div>

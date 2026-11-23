@@ -182,7 +182,9 @@ const Subscription = ({ dict }: { dict: any }) => {
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      {dict?.calculator?.cta?.split('~')[0]} {/* "Заказать" */}
+                      {/* Раньше брался calculator.cta («Заказать за …») с обрезкой
+                          по «~» — получалось «Заказать за» без суммы */}
+                      {dict?.services?.order || 'Заказать'}
                     </a>
                   </div>
                 </div>

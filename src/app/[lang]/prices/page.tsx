@@ -4,6 +4,7 @@ import { Lang } from '../../i18n/dictionaries';
 import Header from '@/app/components/Header';
 import Subscription from '@/app/components/Subscription';
 import Calculator from '@/app/components/Calculator';
+import { Footer } from '@/app/components/Footer';
 
 export async function generateMetadata({
   params,
@@ -41,20 +42,18 @@ export default async function PricesPage({
       <div className='bg-light py-12 text-center'>
         <div className='container mx-auto px-4'>
           <h1 className='text-3xl md:text-5xl font-bold text-primary mb-4'>
-            {t.nav.prices || 'Наши цены'}
+            {t.prices?.heading || t.nav.prices || 'Наши цены'}
           </h1>
-          <p className='text-gray-500 max-w-2xl mx-auto'>
-            Прозрачное ценообразование. Рассчитайте точную стоимость или
-            выберите удобный абонемент.
-          </p>
+          {/* Раньше текст был захардкожен по-русски и показывался и на /ky */}
+          <p className='text-gray-500 max-w-2xl mx-auto'>{t.prices?.desc}</p>
         </div>
       </div>
 
-      {/* Компоненты переехали сюда */}
       <Subscription dict={t} />
       <Calculator dict={t} />
 
-      {/* Здесь можно добавить Footer или упрощенный блок контактов */}
+      {/* Контакты и адрес на каждой странице — плюс для локального SEO */}
+      <Footer dict={t} />
     </main>
   );
 }
