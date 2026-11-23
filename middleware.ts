@@ -35,10 +35,17 @@ export function middleware(request: NextRequest) {
 
   // Если языка нет, редиректим на дефолтный (ky).
   // Для корня — сразу на /ky, а не /ky/ (иначе второй редирект /ky/ → /ky).
+  //
+  // 308 (постоянный), а не 307 по умолчанию: при временном редиректе Google
+  // индексировал сам корень «/» с содержимым /ky, а /ky считал его копией
+  // (в Search Console: «Канонические версии, выбранные Google и пользователем,
+  // не совпадают»). Если когда-нибудь появится выбор языка по Accept-Language,
+  // редирект корня нужно будет вернуть на 302/307.
   if (pathnameIsMissingLocale) {
     const target = pathname === '/' ? '' : pathname;
     return NextResponse.redirect(
       new URL(`/${defaultLocale}${target}`, request.url),
+      308,
     );
   }
 }
