@@ -3,7 +3,11 @@ import {
   Lang,
 } from '@/app/i18n/dictionaries';
 
-const API_URL = 'https://clinning.sino0on.ru/api/items/';
+// Бэкенд переехал на .com (на .ru у поддомена больше нет DNS-записи)
+const API_URL = 'https://clinning.sino0on.com/api/items/';
+// Если API тормозит, не держим рендер страницы: через 5 с берём встроенные
+// словари. Иначе запрос Googlebot мог упереться в таймаут прокси (5xx).
+const API_TIMEOUT_MS = 5000;
 const IGNORED_KEYS = ['value_ru', 'created_at', 'updated_at', 'id'];
 
 type ApiItem = {
@@ -35,7 +39,10 @@ function setNestedValue(obj: Record<string, any>, path: string, value: string) {
 
 export async function getDictionaryFromApi(lang: Lang) {
   try {
-    const res = await fetch(API_URL, { next: { revalidate: 60 } });
+    const res = await fetch(API_URL, {
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(API_TIMEOUT_MS),
+    });
 
     if (!res.ok) {
       throw new Error(`API returned status ${res.status}`);
