@@ -1,15 +1,24 @@
+import Image, { type StaticImageData } from 'next/image';
 import { Clock } from 'lucide-react';
+import maintenanceImage from '@/assets/services/maintenance.jpg';
 
 const Services = ({ t }: { t: any }) => {
   const whatsappLink = 'https://wa.me/996709058182';
 
-  const services = [
+  // TODO: три фото ниже взяты с чужих сайтов (хотлинк) — лучше заменить своими.
+  // Пока они проходят через next/image: ресайз, AVIF/WebP, lazy-loading.
+  const services: {
+    id: number;
+    title: string;
+    time: string;
+    desc: string;
+    image: string | StaticImageData;
+  }[] = [
     {
       id: 1,
       title: t?.services?.items?.[1]?.title || 'БАЗОВАЯ УБОРКА',
       time: t?.services?.items?.[1]?.time || '1.5-2 часа',
       desc: t?.services?.items?.[1]?.desc || 'Утренняя или вечерняя...',
-      // НОВОЕ ФОТО: Протирание поверхностей, уютно
       image:
         'https://service-cleaning.ru/wp-content/uploads/2021/01/general-ub-600.jpg',
     },
@@ -18,16 +27,14 @@ const Services = ({ t }: { t: any }) => {
       title: t?.services?.items?.[2]?.title || 'ПОДДЕРЖИВАЮЩАЯ',
       time: t?.services?.items?.[2]?.time || '6-8 часов',
       desc: t?.services?.items?.[2]?.desc || 'Специалисты в течение...',
-      // Фото: Светлый чистый офис/магазин (оставил старое, оно рабочее)
-      image:
-        'https://avatars.mds.yandex.net/i?id=48f68386395c4095589a5635d5db435b607be9d1-10778769-images-thumbs&n=13',
+      // Было фото с avatars.mds.yandex.net, которое отдавало 404 (битая картинка).
+      image: maintenanceImage,
     },
     {
       id: 3,
       title: t?.services?.items?.[3]?.title || 'ГЕНЕРАЛЬНАЯ УБОРКА',
       time: t?.services?.items?.[3]?.time || '12-24 часов',
       desc: t?.services?.items?.[3]?.desc || 'Тщательная чистка...',
-      // НОВОЕ ФОТО: Тщательная чистка плиты (акцент на деталях)
       image:
         'https://cleaning54.ru/wp-content/uploads/2021/12/myte-okon-akciya-cleaning54.jpg',
     },
@@ -36,7 +43,6 @@ const Services = ({ t }: { t: any }) => {
       title: t?.services?.items?.[4]?.title || 'ПОСЛЕСТРОИТЕЛЬНАЯ',
       time: t?.services?.items?.[4]?.time || '12-24 часов',
       desc: t?.services?.items?.[4]?.desc || 'Удаление пятен...',
-      // Фото: Стройка/ремонт (оставил старое, рабочее)
       image:
         'https://expert-cleaning.com/wp-content/uploads/2023/04/posle-remonta.jpg',
     },
@@ -62,16 +68,17 @@ const Services = ({ t }: { t: any }) => {
             >
               {/* Блок с изображением */}
               <div className='relative h-48 w-full bg-gray-200 overflow-hidden'>
-                {/* Используем компонент Image вместо img */}
-                <img
+                <Image
                   src={service.image}
                   alt={service.title}
+                  fill
+                  sizes='(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw'
                   className='object-cover transition-transform duration-500 group-hover:scale-110'
                 />
 
                 {/* Время поверх картинки */}
                 <div className='absolute top-4 left-4 inline-flex items-center gap-1.5 text-xs font-bold text-primary bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm z-10'>
-                  <Clock size={14} /> {service.time}
+                  <Clock size={14} aria-hidden='true' /> {service.time}
                 </div>
               </div>
 

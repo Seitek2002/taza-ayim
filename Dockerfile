@@ -99,8 +99,10 @@ RUN groupadd --gid 1001 nodejs && \
 
 WORKDIR /app
 
-# Устанавливаем правильные разрешения
-RUN mkdir -p /app/.next && \
+# Устанавливаем правильные разрешения.
+# .next/cache создаём заранее с владельцем nextjs: туда монтируется volume
+# (см. docker-compose.yml), и Docker наследует права из образа.
+RUN mkdir -p /app/.next/cache && \
     chown -R nextjs:nodejs /app
 
 # Копируем public директорию

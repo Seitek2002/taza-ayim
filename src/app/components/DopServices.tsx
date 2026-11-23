@@ -6,7 +6,6 @@ const DopServices = ({ t }: { t: any }) => {
   return (
     <section className='py-20 bg-white'>
       <div className='container mx-auto px-4'>
-        йцуке
         <div className='bg-primary rounded-4xl p-8 md:p-16 text-white relative overflow-hidden shadow-2xl'>
           <div className='absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-3xl'></div>
 

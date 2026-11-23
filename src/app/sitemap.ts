@@ -1,26 +1,17 @@
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next';
+import { LOCALES, languageAlternates, pageUrl } from '@/lib/seo';
 
+// Пути страниц без языка. Новую страницу добавляйте сюда.
+const PATHS = ['', '/prices'];
+
+// Все страницы на всех языках + hreflang-альтернативы.
+// lastModified не указываем: new Date() на каждый запрос Google считает
+// недостоверным и всё равно игнорирует.
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://taza-ayim.kg';
-  return [
-    {
-      url: `${baseUrl}/ru`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/ky`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/ru/prices`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    // ... добавь другие страницы
-  ];
+  return PATHS.flatMap((path) =>
+    LOCALES.map((lang) => ({
+      url: pageUrl(lang, path),
+      alternates: { languages: languageAlternates(path) },
+    })),
+  );
 }

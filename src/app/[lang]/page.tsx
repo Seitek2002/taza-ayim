@@ -1,48 +1,30 @@
-import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 
 import dynamic from 'next/dynamic';
 import Header from '../components/Header';
-import { Footer } from '../components/Footer'; // Убедись что путь верный
+import { Footer } from '../components/Footer';
+import Partners from '../components/Partners';
+import Services from '../components/Services';
+import DopServices from '../components/DopServices';
+import Advantages from '../components/Advantages';
+import Chemicals from '../components/Chemicals';
 import { getDictionaryFromApi } from '@/lib/dictionary-api';
+import { pageMetadata } from '@/lib/seo';
 import { Lang } from '../i18n/dictionaries';
+import heroImage from '@/assets/hero.jpg';
 
-// --- ДИНАМИЧЕСКИЕ ИМПОРТЫ ---
-// Мы не грузим эти компоненты сразу. Они подгрузятся, когда пользователь начнет скроллить.
-// loading: () => ... показывает легкую заглушку (скелетон), пока компонент грузится.
-
-const VideoShowcase = dynamic(() => import('../components/VideoShowcase'), {
-  loading: () => <div className='h-96 bg-gray-50 animate-pulse' />,
-});
-
-const Partners = dynamic(() => import('../components/Partners'), {
-  loading: () => <div className='h-40 bg-white animate-pulse' />,
-});
-
-const Services = dynamic(() => import('../components/Services'));
-
-const DopServices = dynamic(() => import('../components/DopServices'));
-
+// Серверные секции выше импортируются обычным образом: JS на клиент они не шлют,
+// а dynamic() для них ничего не даёт.
+// Клиентские секции ниже — через dynamic(): их JS уходит в отдельные чанки,
+// и каждая гидрируется своим Suspense-блоком, не блокируя остальную страницу.
+// Всё по-прежнему рендерится на сервере (SSR), это важно для SEO.
+const VideoShowcase = dynamic(() => import('../components/VideoShowcase'));
 const PortfolioGallery = dynamic(
   () => import('../components/PortfolioGallery'),
-  {
-    ssr: true, // Галерею можно не рендерить на сервере, если там сложная логика слайдера
-    loading: () => <div className='h-96 bg-gray-100 animate-pulse' />,
-  },
 );
-
-const Advantages = dynamic(() => import('../components/Advantages'));
-
-const Chemicals = dynamic(() => import('../components/Chemicals'));
-
-const Reviews = dynamic(() => import('../components/Reviews'), {
-  loading: () => <div className='h-96 bg-white animate-pulse' />,
-});
-
-const SocialWidget = dynamic(() => import('../components/SocialWidget'), {
-  ssr: true, // Виджет нужен только на клиенте
-});
+const Reviews = dynamic(() => import('../components/Reviews'));
+const SocialWidget = dynamic(() => import('../components/SocialWidget'));
 
 type Props = {
   params: Promise<{ lang: Lang }>;
@@ -51,10 +33,11 @@ type Props = {
 export async function generateMetadata({ params }: Props) {
   const { lang } = await params;
   const t = await getDictionaryFromApi(lang);
-  return {
+  return pageMetadata({
+    lang,
     title: t.seo.title,
     description: t.seo.description,
-  };
+  });
 }
 
 export default async function Home({ params }: Props) {
@@ -63,20 +46,24 @@ export default async function Home({ params }: Props) {
 
   return (
     <main className='min-h-screen pt-18.5'>
-      {/* Header нужен сразу, его оставляем обычным */}
       <Header lang={lang} dict={t} />
-      {/* 1. HERO - Самый важный экран (LCP) */}
+      {/* 1. HERO — эта картинка и есть LCP-элемент на мобилке и десктопе */}
       <section className='relative bg-light min-h-150 flex items-center justify-center overflow-hidden'>
         <div className='absolute inset-0 z-0'>
           <div className='absolute inset-0 bg-linear-to-r from-white via-white/80 to-transparent z-10'></div>
           <Image
-            src='https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop'
+            src={heroImage}
             alt='Чистый офис'
             fill
             className='object-cover'
-            priority // Обязательно priority для первого экрана
-            // ВАЖНО: sizes говорит браузеру, какую версию картинки качать для разных экранов
-            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw'
+            // Локальный файл + preload + fetchPriority=high: браузер узнаёт о картинке
+            // из <head> и качает её раньше всего остального.
+            preload
+            fetchPriority='high'
+            // Без placeholder='blur': под белым градиентом его почти не видно,
+            // а это лишний base64 в HTML и SVG-фильтр на весь первый экран.
+            // Картинка растянута на всю ширину секции на любом экране
+            sizes='100vw'
           />
         </div>
 
@@ -99,17 +86,17 @@ export default async function Home({ params }: Props) {
                 <span>{t.hero.ctaCalculate}</span>
                 <ArrowRight size={20} />
               </a>
-              <Link
+              <a
                 href='#services'
                 className='bg-white hover:bg-gray-50 text-primary border-2 border-primary font-bold py-4 px-8 rounded-full transition flex items-center justify-center'
               >
                 {t.hero.ctaViewServices}
-              </Link>
+              </a>
             </div>
           </div>
         </div>
       </section>
-      {/* 2. ABOUT - Текстовый блок, можно оставить или тоже сделать dynamic, но текст легкий */}
+      {/* 2. ABOUT */}
       <section id='about' className='py-20 bg-white text-center'>
         <div className='container mx-auto px-4 max-w-4xl'>
           <h2 className='text-3xl font-bold text-gray-800 mb-6'>
@@ -120,11 +107,9 @@ export default async function Home({ params }: Props) {
           </p>
         </div>
       </section>
-      {/* Дальше идут тяжелые компоненты, которые загрузятся только при скролле */}
       <VideoShowcase dict={t} />
       <Partners dict={t} />
-      <Services t={t} />{' '}
-      {/* Поменял t={t} на dict={t}, чтобы везде было одинаково */}
+      <Services t={t} />
       <DopServices t={t} />
       <PortfolioGallery dict={t} />
       <Advantages t={t} />
@@ -149,7 +134,6 @@ export default async function Home({ params }: Props) {
           </a>
         </div>
       </section>
-      {/* Footer нужен для SEO, можно оставить или сделать dynamic */}
       <Footer dict={t} />
       <SocialWidget />
     </main>

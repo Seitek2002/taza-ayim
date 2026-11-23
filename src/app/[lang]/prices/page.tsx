@@ -1,4 +1,5 @@
 import { getDictionaryFromApi } from '@/lib/dictionary-api';
+import { pageMetadata } from '@/lib/seo';
 import { Lang } from '../../i18n/dictionaries';
 import Header from '@/app/components/Header';
 import Subscription from '@/app/components/Subscription';
@@ -12,13 +13,16 @@ export async function generateMetadata({
   const { lang } = await params;
   const t = await getDictionaryFromApi(lang);
 
-  // Берем SEO из нового ключа seoPrices, либо дефолтное
+  // Своё SEO страницы цен (seoPrices в словаре), а не главной
   const seo = t.seoPrices || t.seo;
 
-  return {
+  // Свой canonical (/ru/prices), а не унаследованный от layout /ru
+  return pageMetadata({
+    lang,
+    path: '/prices',
     title: seo.title,
     description: seo.description,
-  };
+  });
 }
 
 export default async function PricesPage({
@@ -31,7 +35,7 @@ export default async function PricesPage({
 
   return (
     <main className='min-h-screen pt-18.5'>
-      <Header lang={lang} dict={t} />
+      <Header lang={lang} dict={t} path='/prices' />
 
       {/* Заголовок страницы */}
       <div className='bg-light py-12 text-center'>

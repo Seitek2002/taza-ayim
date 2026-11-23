@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import { ShieldCheck, Leaf } from 'lucide-react';
 
@@ -63,7 +61,7 @@ const Chemicals = ({ dict }: { dict: any }) => {
       <div className='container mx-auto px-4'>
         {/* Заголовок */}
         <div className='text-center mb-16'>
-          <span className='text-secondary font-bold tracking-widest uppercase text-sm'>
+          <span className='text-secondary-dark font-bold tracking-widest uppercase text-sm'>
             {dict?.chemicals?.tag || 'Безопасность'}
           </span>
           <h2 className='text-3xl md:text-4xl font-bold text-gray-900 mt-2 max-w-3xl mx-auto'>
@@ -88,6 +86,7 @@ const Chemicals = ({ dict }: { dict: any }) => {
                   src={brand.logo}
                   alt={brand.name}
                   fill
+                  sizes='192px'
                   className='object-contain'
                 />
               </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Calculator as CalcIcon,
   Check,
@@ -38,8 +38,6 @@ const Calculator = ({ dict }: { dict: any }) => {
   const [activeTab, setActiveTab] = useState<
     'cleaning' | 'dry' | 'facade' | 'truck'
   >('cleaning');
-  const [total, setTotal] = useState(0);
-
   // Состояния
   const [area, setArea] = useState(50);
   const [cleaningType, setCleaningType] =
@@ -49,25 +47,24 @@ const Calculator = ({ dict }: { dict: any }) => {
   const [facadeArea, setFacadeArea] = useState(100);
   const [truckHours, setTruckHours] = useState(2);
 
-  useEffect(() => {
-    let result = 0;
-    switch (activeTab) {
-      case 'cleaning':
-        result = area * PRICES.cleaning[cleaningType];
-        break;
-      case 'dry':
-        result =
-          sofas * PRICES.dryCleaning.sofa + chairs * PRICES.dryCleaning.chair;
-        break;
-      case 'facade':
-        result = facadeArea * PRICES.facade.base;
-        break;
-      case 'truck':
-        result = truckHours * PRICES.truck.hour;
-        break;
-    }
-    setTotal(result);
-  }, [activeTab, area, cleaningType, sofas, chairs, facadeArea, truckHours]);
+  // Итог считается прямо при рендере. Раньше это был useEffect + setTotal:
+  // лишний повторный рендер на каждый ввод (хуже INP) и «0 с» в серверном HTML.
+  let total = 0;
+  switch (activeTab) {
+    case 'cleaning':
+      total = area * PRICES.cleaning[cleaningType];
+      break;
+    case 'dry':
+      total =
+        sofas * PRICES.dryCleaning.sofa + chairs * PRICES.dryCleaning.chair;
+      break;
+    case 'facade':
+      total = facadeArea * PRICES.facade.base;
+      break;
+    case 'truck':
+      total = truckHours * PRICES.truck.hour;
+      break;
+  }
 
   // Берем названия типов из словаря
   const cleaningTypesNames = {
@@ -99,7 +96,7 @@ const Calculator = ({ dict }: { dict: any }) => {
     <section className='py-20 bg-white' id='calculator'>
       <div className='container mx-auto px-4'>
         <div className='text-center mb-12'>
-          <span className='text-secondary font-bold tracking-widest uppercase text-sm'>
+          <span className='text-secondary-dark font-bold tracking-widest uppercase text-sm'>
             {dict?.calculator?.tag || 'Цены'}
           </span>
           <h2 className='text-3xl md:text-4xl font-bold text-gray-900 mt-2'>
@@ -283,7 +280,7 @@ const Calculator = ({ dict }: { dict: any }) => {
                 <div className='bg-secondary/10 border border-secondary p-4 rounded-xl flex gap-3 items-start'>
                   <Truck className='text-secondary shrink-0 mt-1' />
                   <div>
-                    <h4 className='font-bold text-secondary'>
+                    <h4 className='font-bold text-secondary-dark'>
                       {dict?.calculator?.special?.title}
                     </h4>
                     <p className='text-sm text-gray-600'>

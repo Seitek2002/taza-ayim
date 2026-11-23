@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Montserrat } from 'next/font/google';
+import { SITE_URL } from '@/lib/seo';
 
 const seoDict = {
   ru: {
@@ -37,13 +38,9 @@ const montserrat = Montserrat({
   display: 'swap',
 });
 
-// export const metadata: Metadata = {
-//   title: 'Таза Айым',
-//   description: 'Клининговая компания',
-//   icons: {
-//     icon: '/logo.png',
-//   },
-// };
+// Только /ky и /ru. Всё остальное (например /robots.txt, /og-image.jpg,
+// если файла нет) раньше попадало в [lang] и падало с 500 — теперь 404.
+export const dynamicParams = false;
 
 export async function generateMetadata({
   params,
@@ -53,10 +50,9 @@ export async function generateMetadata({
   const { lang } = await params;
   const dict = seoDict[lang] || seoDict.ru;
 
-  // Базовый URL вашего сайта (замени на реальный домен!)
-  const baseUrl = 'https://taza-ayim.kg';
-
   return {
+    // Без metadataBase относительный og:image резолвится в localhost
+    metadataBase: new URL(SITE_URL),
     title: dict.title,
     description: dict.description,
     keywords: dict.keywords,
@@ -72,37 +68,13 @@ export async function generateMetadata({
         follow: true,
       },
     },
-    // Иконки
-    icons: {
-      icon: '/logo.png',
-      shortcut: '/logo.png',
-      apple: '/logo.png', // Лучше сделать png 180x180 для Apple
-    },
-    // Open Graph — это то, как ссылка выглядит в WhatsApp, Telegram, Facebook
-    openGraph: {
-      title: dict.title,
-      description: dict.description,
-      url: `${baseUrl}/${lang}`,
-      siteName: 'Таза Айым Cleaning',
-      images: [
-        {
-          url: '/og-image.jpg', // СДЕЛАЙ КАРТИНКУ 1200x630px и положи в public
-          width: 1200,
-          height: 630,
-          alt: 'Таза Айым Клининг',
-        },
-      ],
-      locale: lang === 'ru' ? 'ru_RU' : 'ky_KG',
-      type: 'website',
-    },
-    // Альтернативные ссылки (очень важно для двух языков!)
-    alternates: {
-      canonical: `${baseUrl}/${lang}`,
-      languages: {
-        ru: `${baseUrl}/ru`,
-        ky: `${baseUrl}/ky`,
-      },
-    },
+    // Иконки — файлы src/app/icon.png (96px) и src/app/apple-icon.png (180px).
+    // Раньше тут был /logo.png на 235 КБ, и браузер качал его дважды.
+    //
+    // canonical, hreflang и Open Graph здесь НЕ задаём: layout общий для всех
+    // страниц, и его canonical наследовался страницей цен (/ru/prices → /ru),
+    // из-за чего Google считал её копией главной. Теперь их задаёт каждая
+    // страница сама через pageMetadata() из src/lib/seo.ts.
     verification: {
       google: 'EAilMGYlrmojAe2QBC-Oo__XPDxOWnu9sFBGGa-bRlM',
       // Не весь тег <meta...>, а только набор букв и цифр из атрибута content

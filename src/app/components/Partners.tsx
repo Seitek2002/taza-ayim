@@ -58,7 +58,8 @@ const Partners = ({ dict }: { dict: any }) => {
                   alt={`Логотип ${partner.name}`}
                   fill
                   className='object-contain'
-                  sizes='(max-width: 768px) 50vw, 20vw'
+                  // Ячейка: ~½ экрана на мобилке, ⅓ на планшете, ≤ 200px на десктопе
+                  sizes='(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 200px'
                 />
               </div>
               <span className='text-center text-gray-700 font-bold text-sm md:text-base group-hover:text-primary transition-colors'>

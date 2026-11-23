@@ -52,7 +52,7 @@ const Subscription = ({ dict }: { dict: any }) => {
       <div className='container mx-auto px-4'>
         {/* Заголовок */}
         <div className='text-center mb-12'>
-          <span className='text-secondary font-bold tracking-widest uppercase text-sm'>
+          <span className='text-secondary-dark font-bold tracking-widest uppercase text-sm'>
             {dict?.calculator?.tag}
           </span>
           <h2 className='text-3xl md:text-4xl font-bold text-gray-900 mt-2'>

@@ -1,11 +1,30 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  ReactCompareSlider,
-  ReactCompareSliderImage,
-} from 'react-compare-slider';
+import Image, { type StaticImageData } from 'next/image';
+import { ReactCompareSlider } from 'react-compare-slider';
 import { CheckCircle2 } from 'lucide-react';
+import poolBefore from '@/assets/portfolio/pool-before.jpg';
+import poolAfter from '@/assets/portfolio/pool-after.jpg';
+import officeBefore from '@/assets/portfolio/office-before.jpg';
+import officeAfter from '@/assets/portfolio/office-after.jpg';
+import flatBefore from '@/assets/portfolio/flat-before.jpg';
+import flatAfter from '@/assets/portfolio/flat-after.jpg';
+
+// Слайдер: на мобилке на всю ширину, на десктопе ⅔ от max-w-6xl (~770px)
+const SLIDER_SIZES = '(max-width: 1024px) 100vw, 770px';
+
+const SliderImage = ({ src, alt }: { src: StaticImageData; alt: string }) => (
+  <Image
+    src={src}
+    alt={alt}
+    fill
+    sizes={SLIDER_SIZES}
+    placeholder='blur'
+    draggable={false}
+    className='object-cover select-none'
+  />
+);
 
 const PortfolioGallery = ({ dict }: { dict: any }) => {
   // Собираем данные из словаря
@@ -15,22 +34,22 @@ const PortfolioGallery = ({ dict }: { dict: any }) => {
       id: 1,
       title: dict?.portfolio?.cases?.[1]?.title || 'Чистка бассейна',
       desc: dict?.portfolio?.cases?.[1]?.desc || 'Удаление налета...',
-      before: '/dirty-pool.png',
-      after: '/clean-pool.jpg',
+      before: poolBefore,
+      after: poolAfter,
     },
     {
       id: 2,
       title: dict?.portfolio?.cases?.[2]?.title || 'Уборка квартиры',
       desc: dict?.portfolio?.cases?.[2]?.desc || 'Глубокая чистка...',
-      before: '/dirty-office.png',
-      after: '/clean-office.png',
+      before: officeBefore,
+      after: officeAfter,
     },
     {
       id: 3,
       title: dict?.portfolio?.cases?.[3]?.title || 'Уборка офиса',
       desc: dict?.portfolio?.cases?.[3]?.desc || 'Глубокая чистка...',
-      before: '/dirty-flat.png',
-      after: '/clean-flat.jpg',
+      before: flatBefore,
+      after: flatAfter,
     },
   ];
 
@@ -41,7 +60,7 @@ const PortfolioGallery = ({ dict }: { dict: any }) => {
       <div className='container mx-auto px-4'>
         {/* Заголовок */}
         <div className='text-center mb-12'>
-          <span className='text-secondary font-bold tracking-widest uppercase text-sm'>
+          <span className='text-secondary-dark font-bold tracking-widest uppercase text-sm'>
             {dict?.portfolio?.tag || 'Наши работы'}
           </span>
           <h2 className='text-3xl md:text-4xl font-bold text-gray-900 mt-2'>
@@ -58,6 +77,8 @@ const PortfolioGallery = ({ dict }: { dict: any }) => {
             {cases.map((item) => (
               <button
                 key={item.id}
+                type='button'
+                aria-pressed={activeCase.id === item.id}
                 onClick={() => setActiveCase(item)}
                 className={`text-left p-4 rounded-xl transition-all duration-300 border-2 flex items-start gap-4 ${
                   activeCase.id === item.id
@@ -66,16 +87,18 @@ const PortfolioGallery = ({ dict }: { dict: any }) => {
                 }`}
               >
                 {/* Мини-превью */}
-                <div className='w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-200'>
-                  <img
+                <div className='relative w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-200'>
+                  <Image
                     src={item.after}
                     alt=''
-                    className='w-full h-full object-cover'
+                    fill
+                    sizes='64px'
+                    className='object-cover'
                   />
                 </div>
 
                 <div>
-                  <h4
+                  <h3
                     className={`font-bold text-lg ${
                       activeCase.id === item.id
                         ? 'text-primary'
@@ -83,12 +106,12 @@ const PortfolioGallery = ({ dict }: { dict: any }) => {
                     }`}
                   >
                     {item.title}
-                  </h4>
+                  </h3>
                   <p className='text-xs text-gray-500 mt-1 line-clamp-2'>
                     {item.desc}
                   </p>
                   {activeCase.id === item.id && (
-                    <div className='flex items-center gap-1 text-xs font-bold text-secondary mt-2 animate-fadeIn'>
+                    <div className='flex items-center gap-1 text-xs font-bold text-secondary-dark mt-2 animate-fadeIn'>
                       <CheckCircle2 size={14} /> Сейчас на экране
                     </div>
                   )}
@@ -103,13 +126,13 @@ const PortfolioGallery = ({ dict }: { dict: any }) => {
               <ReactCompareSlider
                 key={activeCase.id}
                 itemOne={
-                  <ReactCompareSliderImage
+                  <SliderImage
                     src={activeCase.before}
                     alt={dict?.portfolio?.labelBefore || 'До'}
                   />
                 }
                 itemTwo={
-                  <ReactCompareSliderImage
+                  <SliderImage
                     src={activeCase.after}
                     alt={dict?.portfolio?.labelAfter || 'После'}
                   />

@@ -12,3 +12,10 @@ services:
     environment:
       - NODE_ENV=production
       # Здесь можно добавить другие переменные окружения
+    volumes:
+      # Кэш next/image (AVIF/WebP) переживает передеплой: иначе после каждого
+      # деплоя первый запрос каждой картинки ждёт перекодирования.
+      - next-cache:/app/.next/cache
+
+volumes:
+  next-cache:

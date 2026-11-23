@@ -50,11 +50,12 @@ export const Footer = ({ dict }: { dict: any }) => {
               <li className='flex items-center gap-3'>
                 <Instagram className='text-white' />
                 <a
-                  href='https://www.instagram.com/taza_aiym'
+                  href='https://www.instagram.com/taza_ayim/'
                   target='_blank'
+                  rel='noopener noreferrer'
                   className='hover:text-secondary transition'
                 >
-                  @taza_aiym
+                  @taza_ayim
                 </a>
               </li>
             </ul>
@@ -91,7 +92,7 @@ export const Footer = ({ dict }: { dict: any }) => {
           </div> */}
         </div>
 
-        <div className='border-t border-white/10 pt-8 text-center text-sm text-white/60'>
+        <div className='border-t border-white/10 pt-8 text-center text-sm text-white/80'>
           <p>
             &copy; {new Date().getFullYear()} Таза Айым Клининг.{' '}
             {dict.footer.rights}
