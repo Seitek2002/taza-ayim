@@ -49,6 +49,8 @@ type ApiService = {
   description_ru: string;
   description_ky: string;
   image: string | null;
+  /** Адрес страницы услуги (/uslugi/<page>), если она есть и опубликована */
+  page?: string | null;
 };
 type ApiPartner = { id: number; name: string; logo: string; link: string };
 type ApiBrand = {
@@ -93,6 +95,8 @@ export type ServiceView = {
   time: string;
   desc: string;
   image: Img | null;
+  /** Ссылка на отдельную страницу услуги (кнопка «Подробнее») */
+  href: string | null;
 };
 export type PartnerView = { id: string; name: string; logo: string; link: string };
 export type BrandView = {
@@ -165,6 +169,7 @@ export async function getSiteSections(lang: Lang, t: any): Promise<SiteSections>
       time: pick(lang, s.duration_ru, s.duration_ky),
       desc: pick(lang, s.description_ru, s.description_ky),
       image: s.image ?? SERVICE_PLACEHOLDERS[i] ?? null,
+      href: s.page ? `/${lang}/uslugi/${s.page}` : null,
     })),
     partners: api.partners.map((p) => ({
       id: String(p.id),
@@ -229,6 +234,7 @@ function fallbackSections(lang: Lang, t: any): SiteSections {
       time: t?.services?.items?.[n]?.time ?? '',
       desc: t?.services?.items?.[n]?.desc ?? '',
       image: SERVICE_PLACEHOLDERS[i],
+      href: null,
     })),
     partners: [
       ['Sun Planet Organic', '/partners/sun-planet-organic.png', 'https://sunplanetorganic.com/'],

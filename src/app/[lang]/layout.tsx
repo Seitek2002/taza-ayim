@@ -38,9 +38,9 @@ const montserrat = Montserrat({
   display: 'swap',
 });
 
-// Только /ky и /ru. Всё остальное (например /robots.txt, /og-image.jpg,
-// если файла нет) раньше попадало в [lang] и падало с 500 — теперь 404.
-export const dynamicParams = false;
+// dynamicParams = false (только /ky и /ru) задан в самих страницах (главная,
+// цены), а не здесь: Next применяет его ко всем вложенным маршрутам, и тогда
+// страницы услуг, созданные в админке после сборки, отдавали бы 404.
 
 export async function generateMetadata({
   params,

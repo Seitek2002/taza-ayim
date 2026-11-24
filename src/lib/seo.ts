@@ -28,11 +28,14 @@ export function pageMetadata({
   path = '',
   title,
   description,
+  image,
 }: {
   lang: Lang;
   path?: string;
   title: string;
   description: string;
+  /** Своя картинка для превью в соцсетях (полный URL); по умолчанию og-image.jpg */
+  image?: string | null;
 }): Metadata {
   const url = pageUrl(lang, path);
 
@@ -48,14 +51,16 @@ export function pageMetadata({
       description,
       url,
       siteName: 'Таза Айым',
-      images: [
-        {
-          url: '/og-image.jpg',
-          width: 1200,
-          height: 630,
-          alt: 'Таза Айым — клининговая компания в Бишкеке',
-        },
-      ],
+      images: image
+        ? [{ url: image, alt: title }]
+        : [
+            {
+              url: '/og-image.jpg',
+              width: 1200,
+              height: 630,
+              alt: 'Таза Айым — клининговая компания в Бишкеке',
+            },
+          ],
       locale: lang === 'ru' ? 'ru_RU' : 'ky_KG',
       type: 'website',
     },

@@ -4,6 +4,12 @@ import type { NextConfig } from 'next';
 // Если меняете картинку или видео — кладите под новым именем.
 const PUBLIC_ASSET_CACHE = 'public, max-age=2592000, stale-while-revalidate=86400';
 
+// Локальная проверка с локальным бэкендом (см. src/lib/api.ts): разрешаем
+// его картинки. На сервере CONTENT_API_ORIGIN не задан, и это не действует.
+const localApi = process.env.CONTENT_API_ORIGIN
+  ? new URL(process.env.CONTENT_API_ORIGIN)
+  : null;
+
 const nextConfig: NextConfig = {
   output: 'standalone',
   reactCompiler: true,
@@ -12,7 +18,18 @@ const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 2592000,
+    ...(localApi ? { dangerouslyAllowLocalIP: true } : {}),
     remotePatterns: [
+      ...(localApi
+        ? [
+            {
+              protocol: localApi.protocol.replace(':', '') as 'http' | 'https',
+              hostname: localApi.hostname,
+              port: localApi.port,
+              pathname: '/media/**',
+            },
+          ]
+        : []),
       // Фото из админки (отзывы, до/после, услуги, партнёры, бренды).
       // У каждого загруженного файла уникальное имя, поэтому долгий кэш
       // оптимизированных копий не мешает замене фото.

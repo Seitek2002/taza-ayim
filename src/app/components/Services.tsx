@@ -49,17 +49,32 @@ const Services = ({ t, services }: { t: any; services: ServiceView[] }) => {
 
               <div className='p-8 flex flex-col grow'>
                 <h4 className='text-xl font-extrabold text-primary mb-3 group-hover:text-secondary transition-colors uppercase'>
-                  {service.title}
+                  {/* Если у услуги есть своя страница — название ведёт на неё */}
+                  {service.href ? (
+                    <a href={service.href}>{service.title}</a>
+                  ) : (
+                    service.title
+                  )}
                 </h4>
                 <p className='text-gray-600 text-sm mb-8 grow leading-relaxed'>
                   {service.desc}
                 </p>
-                <a
-                  href={whatsappLink}
-                  className='w-full py-3 rounded-xl border-2 border-primary text-primary font-bold text-center hover:bg-primary hover:text-white transition-all mt-auto block'
-                >
-                  {t.services.order}
-                </a>
+                <div className='mt-auto flex flex-col gap-2'>
+                  {service.href && (
+                    <a
+                      href={service.href}
+                      className='w-full py-3 rounded-xl bg-primary text-white font-bold text-center hover:bg-green-700 transition-all block'
+                    >
+                      {t.servicePage?.more || 'Подробнее'}
+                    </a>
+                  )}
+                  <a
+                    href={whatsappLink}
+                    className='w-full py-3 rounded-xl border-2 border-primary text-primary font-bold text-center hover:bg-primary hover:text-white transition-all block'
+                  >
+                    {t.services.order}
+                  </a>
+                </div>
               </div>
             </div>
           ))}

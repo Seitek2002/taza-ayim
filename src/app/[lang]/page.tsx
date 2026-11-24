@@ -31,6 +31,10 @@ type Props = {
   params: Promise<{ lang: Lang }>;
 };
 
+// Только /ky и /ru. Всё остальное (например /robots.txt, /og-image.jpg,
+// если файла нет) раньше попадало в [lang] и падало с 500 — теперь 404.
+export const dynamicParams = false;
+
 export async function generateMetadata({ params }: Props) {
   const { lang } = await params;
   const t = await getDictionaryFromApi(lang);

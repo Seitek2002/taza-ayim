@@ -6,6 +6,9 @@ import Subscription from '@/app/components/Subscription';
 import Calculator from '@/app/components/Calculator';
 import { Footer } from '@/app/components/Footer';
 
+// Только /ky/prices и /ru/prices (см. такой же комментарий на главной)
+export const dynamicParams = false;
+
 export async function generateMetadata({
   params,
 }: {
