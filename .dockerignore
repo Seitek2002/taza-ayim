@@ -16,6 +16,10 @@ Dockerfile
 docker-compose.yml
 .dockerignore
 
+# CI/CD — в образ не нужны (и не сбивают кэш сборки)
+.github
+deploy
+
 # env и логи
 .env*
 *.log

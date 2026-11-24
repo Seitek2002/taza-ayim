@@ -1,0 +1,41 @@
+name: Deploy
+
+# Пуш в master → сайт обновляется сам (blue/green, без простоя).
+# Вручную: Actions → Deploy → Run workflow → deploy или rollback.
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Что сделать'
+        type: choice
+        options: [deploy, rollback]
+        default: deploy
+
+# Деплои идут строго по одному, следующий ждёт окончания предыдущего
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Blue/green deploy to taza-ayim.kg
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          ACTION: ${{ inputs.action || 'deploy' }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          # Ключу на сервере разрешена только команда taza-ayim-deploy
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o ServerAliveInterval=30 \
+            root@217.114.0.30 "$ACTION $GITHUB_SHA"
