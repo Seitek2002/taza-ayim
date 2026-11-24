@@ -2,12 +2,12 @@ import {
   dictionaries as defaultDictionaries,
   Lang,
 } from '@/app/i18n/dictionaries';
+import { API_ORIGIN, API_TIMEOUT_MS, TRANSLATIONS_TAG } from './api';
 
-// Бэкенд переехал на .com (на .ru у поддомена больше нет DNS-записи)
-const API_URL = 'https://clinning.sino0on.com/api/items/';
-// Если API тормозит, не держим рендер страницы: через 5 с берём встроенные
-// словари. Иначе запрос Googlebot мог упереться в таймаут прокси (5xx).
-const API_TIMEOUT_MS = 5000;
+// Тексты сайта из админки. Если API тормозит или недоступен, через 5 с
+// берём встроенные словари (иначе запрос Googlebot мог упереться в
+// таймаут прокси и получить 5xx).
+const API_URL = `${API_ORIGIN}/api/items/`;
 const IGNORED_KEYS = ['value_ru', 'created_at', 'updated_at', 'id'];
 
 type ApiItem = {
@@ -40,7 +40,7 @@ function setNestedValue(obj: Record<string, any>, path: string, value: string) {
 export async function getDictionaryFromApi(lang: Lang) {
   try {
     const res = await fetch(API_URL, {
-      next: { revalidate: 60 },
+      next: { revalidate: 60, tags: [TRANSLATIONS_TAG] },
       signal: AbortSignal.timeout(API_TIMEOUT_MS),
     });
 

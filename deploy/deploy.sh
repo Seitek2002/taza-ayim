@@ -25,6 +25,7 @@ APP_DIR=/home/projects/taza-ayim
 UPSTREAM_CONF=/etc/nginx/snippets/taza-ayim-upstream.conf
 IMAGE=taza-ayim
 CACHE_VOLUME=taza-ayim_next-cache
+ENV_FILE=/etc/taza-ayim.env
 LOG=/var/log/taza-ayim-deploy.log
 KEEP_IMAGES=3
 declare -A PORT=([blue]=3020 [green]=3021)
@@ -136,10 +137,16 @@ deploy() {
     exit 1
   fi
 
+  # Секреты приложения (REVALIDATE_SECRET для /api/revalidate) — в файле на
+  # сервере, не в репозитории
+  local env_args=()
+  [ -f "$ENV_FILE" ] && env_args=(--env-file "$ENV_FILE")
+
   docker rm -f "$IMAGE-$new" >/dev/null 2>&1 || true
   docker run -d --name "$IMAGE-$new" --restart unless-stopped \
     -p "127.0.0.1:${PORT[$new]}:3000" \
     -v "$CACHE_VOLUME:/app/.next/cache" \
+    "${env_args[@]}" \
     "$IMAGE:$tag" >/dev/null
   log "Запущен $new (порт ${PORT[$new]}), проверяю /ru и /ky..."
 

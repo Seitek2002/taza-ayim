@@ -1,34 +1,18 @@
 import Image from 'next/image';
+import type { PartnerView } from '@/lib/site-content';
 
-// Принимаем словарь как пропс
-const Partners = ({ dict }: { dict: any }) => {
-  const partners = [
-    {
-      name: 'Sun Planet Organic',
-      logo: '/partners/sun-planet-organic.png',
-      link: 'https://sunplanetorganic.com/',
-    },
-    {
-      name: 'Вавилон',
-      logo: '/partners/vavilon.jpg',
-      link: 'https://www.instagram.com/vavilon_eventhall?igsh=czByNmh0anR1OWpo',
-    },
-    {
-      name: 'Алтын Булак',
-      logo: '/partners/алтын-булак-пансионат.jpg',
-      link: 'https://www.instagram.com/altyn.bulak.kg?igsh=aHYxeDFnMm53Z3Zu',
-    },
-    {
-      name: 'Монарх Чайхана',
-      logo: '/partners/Монарх-Чайхана.jpg',
-      link: 'https://www.instagram.com/monarch_resto?igsh=MWhqZHRwbWllc3A0',
-    },
-    {
-      name: 'Armada',
-      logo: '/partners/armada.jpg',
-      link: 'https://www.instagram.com/armada.kg312?igsh=bnFhMmVvcnh2anZq',
-    },
-  ];
+const CARD_CLASS =
+  'group flex flex-col items-center p-6 bg-gray-50 rounded-2xl border border-transparent hover:border-gray-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300';
+
+// Партнёры приходят из админки, см. src/lib/site-content.ts
+const Partners = ({
+  dict,
+  partners,
+}: {
+  dict: any;
+  partners: PartnerView[];
+}) => {
+  if (!partners.length) return null;
 
   return (
     <section className='py-20 bg-white border-t border-gray-100'>
@@ -44,29 +28,41 @@ const Partners = ({ dict }: { dict: any }) => {
         </div>
 
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 justify-center'>
-          {partners.map((partner, index) => (
-            <a
-              key={index}
-              href={partner.link}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='group flex flex-col items-center p-6 bg-gray-50 rounded-2xl border border-transparent hover:border-gray-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300'
-            >
-              <div className='relative w-full h-24 mb-4'>
-                <Image
-                  src={partner.logo}
-                  alt={`Логотип ${partner.name}`}
-                  fill
-                  className='object-contain'
-                  // Ячейка: ~½ экрана на мобилке, ⅓ на планшете, ≤ 200px на десктопе
-                  sizes='(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 200px'
-                />
+          {partners.map((partner) => {
+            const body = (
+              <>
+                <div className='relative w-full h-24 mb-4'>
+                  <Image
+                    src={partner.logo}
+                    alt={`Логотип ${partner.name}`}
+                    fill
+                    className='object-contain'
+                    // Ячейка: ~½ экрана на мобилке, ⅓ на планшете, ≤ 200px на десктопе
+                    sizes='(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 200px'
+                  />
+                </div>
+                <span className='text-center text-gray-700 font-bold text-sm md:text-base group-hover:text-primary transition-colors'>
+                  {partner.name}
+                </span>
+              </>
+            );
+            // Ссылка у партнёра в админке необязательна
+            return partner.link ? (
+              <a
+                key={partner.id}
+                href={partner.link}
+                target='_blank'
+                rel='noopener noreferrer'
+                className={CARD_CLASS}
+              >
+                {body}
+              </a>
+            ) : (
+              <div key={partner.id} className={CARD_CLASS}>
+                {body}
               </div>
-              <span className='text-center text-gray-700 font-bold text-sm md:text-base group-hover:text-primary transition-colors'>
-                {partner.name}
-              </span>
-            </a>
-          ))}
+            );
+          })}
         </div>
 
         <div className='text-center mt-12'>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import Image, { type StaticImageData } from 'next/image';
+import Image from 'next/image';
 import {
   ChevronLeft,
   ChevronRight,
@@ -9,33 +9,14 @@ import {
   Play,
   Loader2,
 } from 'lucide-react';
-import poster1 from '@/assets/posters/review-1.jpg';
-import poster2 from '@/assets/posters/review-2.jpg';
-import poster3 from '@/assets/posters/review-3.jpg';
-
-type ReviewItem =
-  | { type: 'image'; src: string }
-  // Видео: 960p H.264 + AAC, faststart (moov в начале — старт без докачки хвоста файла)
-  | { type: 'video'; src: string; poster: StaticImageData };
-
-const reviewsList: ReviewItem[] = [
-  // ФОТО
-  { type: 'image', src: '/reviews/item-1.jpg' },
-  { type: 'image', src: '/reviews/item-2.jpg' },
-
-  // ВИДЕО
-  { type: 'video', src: '/reviews/review-1.mp4', poster: poster1 },
-  { type: 'video', src: '/reviews/review-2.mp4', poster: poster2 },
-  { type: 'video', src: '/reviews/review-3.mp4', poster: poster3 },
-
-  { type: 'image', src: '/reviews/item-3.jpg' },
-  { type: 'image', src: '/reviews/item-4.jpg' },
-];
+import type { ReviewView } from '@/lib/site-content';
 
 // Карточка: w-65 (260px) на мобилке, w-75 (300px) с md
 const CARD_SIZES = '(max-width: 768px) 260px, 300px';
 
-const Reviews = ({ dict }: { dict: any }) => {
+// Отзывы приходят из админки (раздел «Отзывы»), см. src/lib/site-content.ts.
+// Видео там уже сжаты (H.264 + AAC, faststart) и с готовой обложкой.
+const Reviews = ({ dict, items }: { dict: any; items: ReviewView[] }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
@@ -87,6 +68,8 @@ const Reviews = ({ dict }: { dict: any }) => {
     }
   };
 
+  if (!items.length) return null;
+
   return (
     <section className='py-20 bg-white border-t border-gray-100' id='reviews'>
       <div className='container mx-auto px-4'>
@@ -124,15 +107,15 @@ const Reviews = ({ dict }: { dict: any }) => {
             className='flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory hide-scrollbar px-4'
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {reviewsList.map((item, idx) => (
+            {items.map((item, idx) => (
               <div
-                key={item.src}
+                key={item.key}
                 className='snap-center shrink-0 w-65 md:w-75 h-125 md:h-150 relative rounded-2xl overflow-hidden shadow-lg border border-gray-100 bg-gray-900'
               >
-                {item.type === 'image' ? (
+                {item.kind === 'photo' ? (
                   <Image
                     src={item.src}
-                    alt={`Отзыв клиента ${idx + 1}`}
+                    alt={item.alt}
                     fill
                     sizes={CARD_SIZES}
                     className='object-cover'
@@ -148,7 +131,7 @@ const Reviews = ({ dict }: { dict: any }) => {
                       className='w-full h-full object-cover'
                       playsInline
                       loop
-                      aria-label={`Видеоотзыв клиента ${idx + 1}`}
+                      aria-label={item.alt}
                       // 1. Когда данных мало и видео тупит -> Показываем лоадер
                       onWaiting={() => setBufferingVideoIndex(idx)}
                       // 2. Когда данные есть и видео пошло -> Скрываем лоадер
@@ -162,13 +145,14 @@ const Reviews = ({ dict }: { dict: any }) => {
                     />
 
                     {/* Постер — lazy next/image, пока видео ни разу не запускали */}
-                    {!startedVideos.includes(idx) && (
+                    {item.poster && !startedVideos.includes(idx) && (
                       <Image
                         src={item.poster}
                         alt=''
                         fill
                         sizes={CARD_SIZES}
-                        placeholder='blur'
+                        // blur есть только у встроенных обложек; у обложек из админки — нет
+                        placeholder={typeof item.poster === 'string' ? 'empty' : 'blur'}
                         className='object-cover pointer-events-none'
                       />
                     )}
@@ -185,7 +169,7 @@ const Reviews = ({ dict }: { dict: any }) => {
                     {playingVideoIndex !== idx && (
                       <button
                         type='button'
-                        aria-label={`Смотреть видеоотзыв ${idx + 1}`}
+                        aria-label={`▶ ${item.alt}`}
                         className='absolute inset-0 flex items-center justify-center bg-black/30 transition-colors group-hover/video:bg-black/40 z-10'
                         onClick={() => toggleVideo(idx)}
                       >

@@ -11,6 +11,7 @@ import Advantages from '../components/Advantages';
 import Chemicals from '../components/Chemicals';
 import { getDictionaryFromApi } from '@/lib/dictionary-api';
 import { pageMetadata } from '@/lib/seo';
+import { getSiteSections } from '@/lib/site-content';
 import { Lang } from '../i18n/dictionaries';
 import heroImage from '@/assets/hero.jpg';
 
@@ -43,6 +44,8 @@ export async function generateMetadata({ params }: Props) {
 export default async function Home({ params }: Props) {
   const { lang } = await params;
   const t = await getDictionaryFromApi(lang);
+  // Отзывы, до/после, услуги, партнёры, бренды — из админки
+  const sections = await getSiteSections(lang, t);
 
   return (
     <main className='min-h-screen pt-18.5'>
@@ -108,13 +111,13 @@ export default async function Home({ params }: Props) {
         </div>
       </section>
       <VideoShowcase dict={t} />
-      <Partners dict={t} />
-      <Services t={t} />
+      <Partners dict={t} partners={sections.partners} />
+      <Services t={t} services={sections.services} />
       <DopServices t={t} />
-      <PortfolioGallery dict={t} />
+      <PortfolioGallery dict={t} cases={sections.cases} />
       <Advantages t={t} />
-      <Chemicals dict={t} />
-      <Reviews dict={t} />
+      <Chemicals dict={t} brands={sections.brands} />
+      <Reviews dict={t} items={sections.reviews} />
       {/* CTA PRICES - Легкий блок, можно оставить так */}
       <section className='py-16 bg-primary text-white text-center'>
         <div className='container mx-auto px-4'>

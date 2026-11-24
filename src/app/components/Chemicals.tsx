@@ -1,31 +1,9 @@
 import Image from 'next/image';
 import { ShieldCheck, Leaf } from 'lucide-react';
+import type { BrandView } from '@/lib/site-content';
 
-const Chemicals = ({ dict }: { dict: any }) => {
-  const brands = [
-    {
-      id: 'buzil',
-      name: 'Buzil',
-      country: 'Germany',
-      logo: '/brands/buzil.png', // Убедись, что нашел и положил картинку сюда
-      desc: dict?.chemicals?.buzil?.desc || 'Мировой лидер...',
-    },
-    {
-      id: 'kiehl',
-      name: 'Johannes KIEHL',
-      country: 'Germany',
-      logo: '/brands/kiehl.png', // Убедись, что нашел и положил картинку сюда
-      desc: dict?.chemicals?.kiehl?.desc || 'Экологичные средства...',
-    },
-    {
-      id: 'GRASS',
-      name: 'GRASS',
-      country: 'Russia',
-      logo: '/brands/grass.jpg', // Убедись, что нашел и положил картинку сюда
-      desc: dict?.chemicals?.grass?.desc || 'Экологичные средства...',
-    },
-  ];
-
+// Бренды приходят из админки («Бренды химии»), см. src/lib/site-content.ts
+const Chemicals = ({ dict, brands }: { dict: any; brands: BrandView[] }) => {
   const renderFlag = (country: string) => {
     if (country === 'Germany') {
       return (
@@ -55,6 +33,8 @@ const Chemicals = ({ dict }: { dict: any }) => {
     }
     return null;
   };
+
+  if (!brands.length) return null;
 
   return (
     <section className='py-20 bg-white' id='chemicals'>
@@ -96,16 +76,19 @@ const Chemicals = ({ dict }: { dict: any }) => {
                 {brand.name}
               </h3>
 
-              {/* Флаг и Страна */}
-              <div className='flex items-center gap-2 mb-6 bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100'>
-                {/* Иконка флага Германии (SVG) */}
-                <div className='w-5 h-5 rounded-full overflow-hidden relative'>
-                  {renderFlag(brand.country)}
+              {/* Флаг и страна (флаги нарисованы для Германии и России) */}
+              {brand.countryLabel && (
+                <div className='flex items-center gap-2 mb-6 bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100'>
+                  {renderFlag(brand.country) && (
+                    <div className='w-5 h-5 rounded-full overflow-hidden relative'>
+                      {renderFlag(brand.country)}
+                    </div>
+                  )}
+                  <span className='text-sm font-bold text-gray-700'>
+                    {brand.countryLabel}
+                  </span>
                 </div>
-                <span className='text-sm font-bold text-gray-700'>
-                  {dict?.chemicals?.countries?.[brand.country] || brand.country}
-                </span>
-              </div>
+              )}
 
               <p className='text-gray-600 leading-relaxed'>{brand.desc}</p>
             </div>

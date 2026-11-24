@@ -13,7 +13,15 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 2592000,
     remotePatterns: [
-      // Фото в блоке «Услуги» пока берутся с чужих сайтов — лучше заменить своими.
+      // Фото из админки (отзывы, до/после, услуги, партнёры, бренды).
+      // У каждого загруженного файла уникальное имя, поэтому долгий кэш
+      // оптимизированных копий не мешает замене фото.
+      {
+        protocol: 'https',
+        hostname: 'clinning.sino0on.com',
+        pathname: '/media/**',
+      },
+      // Временные фото услуг с чужих сайтов (пока в админке нет своих)
       {
         protocol: 'https',
         hostname: 'service-cleaning.ru',

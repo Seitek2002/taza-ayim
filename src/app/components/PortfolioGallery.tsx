@@ -4,56 +4,42 @@ import { useState } from 'react';
 import Image, { type StaticImageData } from 'next/image';
 import { ReactCompareSlider } from 'react-compare-slider';
 import { CheckCircle2 } from 'lucide-react';
-import poolBefore from '@/assets/portfolio/pool-before.jpg';
-import poolAfter from '@/assets/portfolio/pool-after.jpg';
-import officeBefore from '@/assets/portfolio/office-before.jpg';
-import officeAfter from '@/assets/portfolio/office-after.jpg';
-import flatBefore from '@/assets/portfolio/flat-before.jpg';
-import flatAfter from '@/assets/portfolio/flat-after.jpg';
+import type { CaseView } from '@/lib/site-content';
 
 // Слайдер: на мобилке на всю ширину, на десктопе ⅔ от max-w-6xl (~770px)
 const SLIDER_SIZES = '(max-width: 1024px) 100vw, 770px';
 
-const SliderImage = ({ src, alt }: { src: StaticImageData; alt: string }) => (
+const SliderImage = ({
+  src,
+  alt,
+}: {
+  src: string | StaticImageData;
+  alt: string;
+}) => (
   <Image
     src={src}
     alt={alt}
     fill
     sizes={SLIDER_SIZES}
-    placeholder='blur'
+    // blur есть только у встроенных фото; у фото из админки — нет
+    placeholder={typeof src === 'string' ? 'empty' : 'blur'}
     draggable={false}
     className='object-cover select-none'
   />
 );
 
-const PortfolioGallery = ({ dict }: { dict: any }) => {
-  // Собираем данные из словаря
-  // Используем ?. (опциональную цепочку) на случай, если ключей пока нет в базе
-  const cases = [
-    {
-      id: 1,
-      title: dict?.portfolio?.cases?.[1]?.title || 'Чистка бассейна',
-      desc: dict?.portfolio?.cases?.[1]?.desc || 'Удаление налета...',
-      before: poolBefore,
-      after: poolAfter,
-    },
-    {
-      id: 2,
-      title: dict?.portfolio?.cases?.[2]?.title || 'Уборка квартиры',
-      desc: dict?.portfolio?.cases?.[2]?.desc || 'Глубокая чистка...',
-      before: officeBefore,
-      after: officeAfter,
-    },
-    {
-      id: 3,
-      title: dict?.portfolio?.cases?.[3]?.title || 'Уборка офиса',
-      desc: dict?.portfolio?.cases?.[3]?.desc || 'Глубокая чистка...',
-      before: flatBefore,
-      after: flatAfter,
-    },
-  ];
+// Работы «до/после» приходят из админки, см. src/lib/site-content.ts
+const PortfolioGallery = ({
+  dict,
+  cases,
+}: {
+  dict: any;
+  cases: CaseView[];
+}) => {
+  const [activeId, setActiveId] = useState(cases[0]?.id);
+  const activeCase = cases.find((c) => c.id === activeId) ?? cases[0];
 
-  const [activeCase, setActiveCase] = useState(cases[0]);
+  if (!activeCase) return null;
 
   return (
     <section className='py-20 bg-light' id='portfolio'>
@@ -79,7 +65,7 @@ const PortfolioGallery = ({ dict }: { dict: any }) => {
                 key={item.id}
                 type='button'
                 aria-pressed={activeCase.id === item.id}
-                onClick={() => setActiveCase(item)}
+                onClick={() => setActiveId(item.id)}
                 className={`text-left p-4 rounded-xl transition-all duration-300 border-2 flex items-start gap-4 ${
                   activeCase.id === item.id
                     ? 'border-primary bg-white shadow-lg scale-105 z-10'
