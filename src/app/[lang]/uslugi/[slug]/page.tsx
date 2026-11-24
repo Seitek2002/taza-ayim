@@ -85,17 +85,19 @@ function Fact({
   value: string;
   note?: string;
 }) {
+  // Список, а не <dl>: иконка рядом с dt/dd ломала структуру <dl>
+  // (Lighthouse, «definition-list»)
   return (
-    <div className='flex gap-4'>
+    <li className='flex gap-4'>
       <div className='w-11 h-11 rounded-full bg-primary/10 text-primary grid place-items-center shrink-0'>
         <Icon size={20} aria-hidden='true' />
       </div>
       <div className='min-w-0'>
-        <dt className='text-sm text-gray-500'>{label}</dt>
-        <dd className='text-lg font-bold text-gray-900 leading-snug'>{value}</dd>
-        {note && <dd className='text-xs text-gray-500 mt-1'>{note}</dd>}
+        <p className='text-sm text-gray-500'>{label}</p>
+        <p className='text-lg font-bold text-gray-900 leading-snug'>{value}</p>
+        {note && <p className='text-xs text-gray-500 mt-1'>{note}</p>}
       </div>
-    </div>
+    </li>
   );
 }
 
@@ -226,7 +228,7 @@ export default async function ServicePage({ params }: Props) {
             </div>
 
             <aside className='bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8'>
-              <dl className='flex flex-col gap-5'>
+              <ul className='flex flex-col gap-5'>
                 {page.price && (
                   <Fact icon={Wallet} label={s.price} value={page.price} note={s.priceNote} />
                 )}
@@ -235,7 +237,7 @@ export default async function ServicePage({ params }: Props) {
                 )}
                 <Fact icon={MapPin} label={s.area} value={s.areaValue} />
                 <Fact icon={Sparkles} label={s.chemicals} value={s.chemicalsValue} />
-              </dl>
+              </ul>
             </aside>
           </div>
         </div>
